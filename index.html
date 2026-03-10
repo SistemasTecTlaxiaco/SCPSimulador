@@ -515,6 +515,99 @@
   }
   #tooltip strong { color: #fff; display: block; margin-bottom: 4px; }
 
+  /* ─── TOUR GUIDE ─── */
+  #tour-selector {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.75);
+    z-index: 1100;
+    align-items: center;
+    justify-content: center;
+  }
+  #tour-selector.open { display: flex; }
+  .tour-sel-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    width: 500px;
+    max-width: calc(100vw - 32px);
+  }
+  .tour-sel-card h3 {
+    font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px;
+  }
+  .tour-sel-card > p {
+    font-size: 13px; color: var(--muted); margin-bottom: 16px;
+  }
+  .tour-option {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px; border: 1px solid var(--border);
+    border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all .15s;
+  }
+  .tour-option:hover { border-color: var(--accent); background: rgba(124,58,237,.08); }
+  .tour-option .tour-opt-icon { font-size: 22px; flex-shrink: 0; }
+  .tour-option .tour-opt-info h4 { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+  .tour-option .tour-opt-info p  { font-size: 12px; color: var(--muted); margin: 0; }
+
+  #tour-card {
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    max-width: calc(100vw - 32px);
+    background: #1a1d2e;
+    border: 1.5px solid #7c3aed;
+    border-radius: 14px;
+    padding: 16px 18px 14px;
+    z-index: 1000;
+    box-shadow: 0 8px 40px rgba(124,58,237,.4), 0 2px 10px rgba(0,0,0,.6);
+  }
+  #tour-card .tour-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+  }
+  .tour-step-badge {
+    background: #7c3aed; color: #fff; font-size: 11px; font-weight: 700;
+    padding: 2px 9px; border-radius: 20px; flex-shrink: 0;
+  }
+  .tour-title-text { font-size: 13px; font-weight: 700; color: #a78bfa; }
+  #tour-progress {
+    height: 4px; background: var(--border); border-radius: 2px;
+    margin-bottom: 10px; overflow: hidden;
+  }
+  #tour-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #7c3aed, #a78bfa);
+    border-radius: 2px; transition: width 0.4s ease;
+  }
+  .tour-text { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 12px; }
+  .tour-actions { display: flex; align-items: center; gap: 8px; }
+  .tour-hint { font-size: 11px; color: var(--muted); margin-right: auto; font-style: italic; }
+
+  .tour-highlight {
+    position: relative;
+    z-index: 950 !important;
+    outline: 2.5px solid #a78bfa !important;
+    outline-offset: 4px;
+    border-radius: 6px;
+    box-shadow: 0 0 0 5px rgba(124,58,237,.18), 0 0 24px rgba(124,58,237,.35) !important;
+    animation: tour-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes tour-pulse {
+    0%,100% { box-shadow: 0 0 0 4px rgba(124,58,237,.2), 0 0 18px rgba(124,58,237,.2); }
+    50%      { box-shadow: 0 0 0 9px rgba(124,58,237,.08), 0 0 32px rgba(124,58,237,.4); }
+  }
+  .tour-btn-guide {
+    background: linear-gradient(135deg,#7c3aed,#a855f7);
+    color: #fff; border: none; border-radius: 7px;
+    padding: 6px 13px; font-size: 13px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 5px;
+    transition: opacity .15s;
+  }
+  .tour-btn-guide:hover { opacity: .88; }
+
   /* ─── QUORUM CHECKER ─── */
   .qcheck-result {
     background: var(--panel2);
@@ -588,10 +681,63 @@
     <button class="tab-btn" onclick="switchTab('teoria')">📚 Teoría</button>
     <button class="tab-btn" onclick="switchTab('ejercicios')">✏️ Ejercicios</button>
   </div>
+  <button class="tour-btn-guide" onclick="openTourSelector()" title="Guía interactiva paso a paso">🎓 Guía Paso a Paso</button>
 </header>
 
 <!-- TOOLTIP -->
 <div id="tooltip"></div>
+
+<!-- ══════════════════════════ TOUR SELECTOR MODAL ══════════════════════════ -->
+<div id="tour-selector">
+  <div class="tour-sel-card">
+    <h3>🎓 Selecciona una Guía Interactiva</h3>
+    <p>El simulador te mostrará qué hacer en cada paso con instrucciones resaltadas en pantalla.</p>
+
+    <div class="tour-option" onclick="startTour('basico')">
+      <div class="tour-opt-icon">⚡</div>
+      <div class="tour-opt-info">
+        <h4>Ejercicio 1 — Quorum Slices Básico</h4>
+        <p>Red de 3 nodos. Aprende threshold, quorum slice y consenso. 8 pasos.</p>
+      </div>
+    </div>
+
+    <div class="tour-option" onclick="startTour('stellarbeat')">
+      <div class="tour-opt-icon">🌐</div>
+      <div class="tour-opt-info">
+        <h4>Ejercicio 2 — Red StellarBeat (5 nodos)</h4>
+        <p>Descubre quórums posibles y simula un voto dividido. 7 pasos.</p>
+      </div>
+    </div>
+
+    <div class="tour-option" onclick="startTour('split')">
+      <div class="tour-opt-icon">⚠️</div>
+      <div class="tour-opt-info">
+        <h4>Ejercicio 3 — Red Dividida y Bifurcación</h4>
+        <p>Observa cómo falla la intersección de quórum. 6 pasos.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:12px; display:flex; justify-content:flex-end;">
+      <button class="btn btn-outline" onclick="closeTourSelector()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ TOUR FLOATING CARD ══════════════════════════ -->
+<div id="tour-card">
+  <div class="tour-header">
+    <span class="tour-step-badge" id="tour-step-badge">Paso 1/8</span>
+    <span class="tour-title-text" id="tour-title"></span>
+    <button onclick="tourSkip()" title="Saltar guía" style="margin-left:auto;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;">✕</button>
+  </div>
+  <div id="tour-progress"><div id="tour-progress-bar" style="width:0%"></div></div>
+  <div class="tour-text" id="tour-text"></div>
+  <div class="tour-actions">
+    <span class="tour-hint" id="tour-hint"></span>
+    <button class="btn btn-outline btn-sm" onclick="tourSkip()">⏭ Saltar guía</button>
+    <button class="btn btn-primary btn-sm" id="tour-next-btn" onclick="tourNext()">Siguiente →</button>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════ SIMULADOR TAB ══════════════════════════════════ -->
 <div class="tab-content active" id="tab-simulador">
@@ -1082,6 +1228,7 @@ function selectNode(id) {
   renderNodesList();
   showConfig(id);
   renderGraph();
+  tourTrigger('selectNode', id);
 }
 
 function showConfig(id) {
@@ -1201,6 +1348,7 @@ function loadScenario(type) {
   }
 
   renderAll();
+  tourTrigger('scenario', type);
 }
 
 // ════════════════════════════════════════════════════════════════════════
@@ -1248,7 +1396,7 @@ function renderVoteInputs() {
 
 function setVote(id, val) {
   const nd = nodes.find(n => n.id === id);
-  if (nd) { nd.vote = val; renderNodesList(); renderGraph(); }
+  if (nd) { nd.vote = val; renderNodesList(); renderGraph(); tourTrigger('voteChange', nd.name); }
 }
 
 // ════════════════════════════════════════════════════════════════════════
@@ -1485,6 +1633,7 @@ let simStates = [];
 
 function runSimulation() {
   if (nodes.length < 2) { logEvent('Agrega al menos 2 nodos para simular.', 'warn'); return; }
+  tourTrigger('simulate', null);
   resetSimulation();
   simRunning = true;
   logEvent('--- Iniciando simulación de consenso ---', 'info');
@@ -1785,6 +1934,293 @@ function checkQuiz() {
 function toggleAnswer(id) {
   const el = document.getElementById(id);
   el.classList.toggle('visible');
+}
+
+// ════════════════════════════════════════════════════════════════════════
+//  TOUR GUIDE SYSTEM
+// ════════════════════════════════════════════════════════════════════════
+const TOURS = {
+  basico: {
+    title: 'Ejercicio 1 — Quorum Slices Básico',
+    steps: [
+      {
+        title: 'Cargar red básica',
+        text: 'Empecemos con 3 nodos. Haz clic en el botón <b>⚡ Básico (3 nodos)</b> en el panel izquierdo.',
+        hint: '👆 Haz clic en el botón resaltado',
+        target: () => document.querySelector("button[onclick=\"loadScenario('basic')\"]"),
+        waitFor: 'scenario:basic'
+      },
+      {
+        title: 'Observa el grafo',
+        text: 'La red tiene 3 nodos: <b>Alice</b>, <b>Bob</b> y <b>Chad</b>. Cada uno confía en los otros 2.<br>Haz clic en el nodo <b>Alice</b> en el grafo para seleccionarlo.',
+        hint: '👆 Haz clic sobre Alice en el grafo central',
+        target: () => document.getElementById('graph-svg'),
+        waitFor: 'selectNode'
+      },
+      {
+        title: 'Inspecciona el Quorum Slice',
+        text: 'Mira el panel izquierdo inferior: el <b>threshold</b> es <b>2/2</b>, significa que Alice necesita que <em>ambos</em> Bob y Chad estén de acuerdo antes de cambiar su voto.',
+        hint: '📖 Lee la información y haz clic en "Siguiente"',
+        target: () => document.getElementById('selected-config'),
+        waitFor: null
+      },
+      {
+        title: 'Configura los votos',
+        text: 'En el panel derecho, sección <b>Simulación de Votación</b>, cambia el voto de <b>Chad</b> a <b>Burger 🍔</b>. Alice y Bob ya tienen Pizza 🍕.',
+        hint: '👆 Cambia el voto de Chad en el panel derecho',
+        target: () => document.getElementById('vote-inputs'),
+        waitFor: 'voteChange:Chad'
+      },
+      {
+        title: '¡Simula el consenso!',
+        text: 'Ahora presiona el botón <b>▶ Simular</b> para ejecutar el protocolo de consenso paso a paso.',
+        hint: '👆 Haz clic en "▶ Simular"',
+        target: () => document.querySelector("button[onclick=\"runSimulation()\"]"),
+        waitFor: 'simulate'
+      },
+      {
+        title: 'Observa el Registro de Eventos',
+        text: 'Lee el <b>Registro de Eventos</b> en el panel derecho. Verás ronda por ronda cómo los nodos consultan sus slices. ¿Alguno cambió de voto?',
+        hint: '📖 Lee el registro y haz clic en "Siguiente"',
+        target: () => document.getElementById('events-log'),
+        waitFor: null
+      },
+      {
+        title: '¿Qué valor ganó?',
+        text: 'Con threshold <b>2/2</b>, Alice necesita que BOB y CHAD estén de acuerdo. Chad necesita ALICE y BOB. Si Chad no cambia, ¿pueden Alice y Bob forzar el consenso?<br><br><em>Observa el resultado y piénsalo.</em>',
+        hint: '🤔 Reflexiona sobre el resultado',
+        target: () => document.getElementById('consensus-result'),
+        waitFor: null
+      },
+      {
+        title: '🎉 ¡Ejercicio 1 completado!',
+        text: '¡Muy bien! Aprendiste cómo los <b>Quorum Slices</b> y el <b>threshold</b> determinan el consenso.<br><br>Ve a la pestaña <b>✏️ Ejercicios</b> para responder las preguntas formales.',
+        hint: '✅ Haz clic en "Finalizar" para terminar la guía',
+        target: () => document.querySelectorAll('.tab-btn')[2],
+        waitFor: null,
+        isFinal: true
+      }
+    ]
+  },
+
+  stellarbeat: {
+    title: 'Ejercicio 2 — Red StellarBeat',
+    steps: [
+      {
+        title: 'Cargar red StellarBeat',
+        text: 'Carga el escenario real de Stellar con 5 nodos. Haz clic en <b>🌐 StellarBeat (5 nodos)</b>.',
+        hint: '👆 Haz clic en el botón resaltado',
+        target: () => document.querySelector("button[onclick=\"loadScenario('stellarBeat')\"]"),
+        waitFor: 'scenario:stellarBeat'
+      },
+      {
+        title: 'Verifica la intersección de quórum',
+        text: 'En el panel derecho, el indicador <b>Intersección de Quórum</b> debe estar en <span style="color:#10b981">✅ verde</span>. Esto garantiza que la red es <b>segura</b> y no habrá bifurcaciones.',
+        hint: '👀 Observa el indicador verde y haz clic en "Siguiente"',
+        target: () => document.getElementById('qi-status'),
+        waitFor: null
+      },
+      {
+        title: 'Selecciona un nodo para inspeccionar',
+        text: 'Haz clic en el nodo <b>Alice</b> en el grafo. Su threshold es 2/3: necesita al menos 2 de sus 3 nodos de confianza para adoptar un voto.',
+        hint: '👆 Haz clic en Alice en el grafo',
+        target: () => document.getElementById('graph-svg'),
+        waitFor: 'selectNode'
+      },
+      {
+        title: 'Divide los votos',
+        text: 'Configura así en el panel derecho:<br><b>Alice = Pizza 🍕, Bob = Pizza 🍕</b><br><b>Chad = Burger 🍔, Daisy = Burger 🍔, Steve = Burger 🍔</b><br><br>2 votos vs 3 votos.',
+        hint: '👆 Modifica los votos en "Simulación de Votación"',
+        target: () => document.getElementById('vote-inputs'),
+        waitFor: null
+      },
+      {
+        title: '¡Simula el consenso!',
+        text: 'Presiona <b>▶ Simular</b>. Observa qué valor gana con 2 votos Pizza contra 3 votos Burger.',
+        hint: '👆 Haz clic en "▶ Simular"',
+        target: () => document.querySelector("button[onclick=\"runSimulation()\"]"),
+        waitFor: 'simulate'
+      },
+      {
+        title: 'Analiza el resultado',
+        text: '3 nodos (Chad, Daisy, Steve) forman un <b>quórum completo</b> porque cada uno satisface su threshold con los otros. Alice y Bob solos NO forman un quórum con threshold 2/3.<br><br>La mayoría no siempre gana: lo que importa es el <b>quórum</b>.',
+        hint: '🤔 Reflexiona sobre por qué Burger ganó',
+        target: () => document.getElementById('consensus-result'),
+        waitFor: null
+      },
+      {
+        title: '🎉 ¡Ejercicio 2 completado!',
+        text: 'Entendiste la diferencia entre <em>mayoría de votos</em> y <em>quórum</em>. Son conceptos distintos en SCP.<br><br>Ve a <b>✏️ Ejercicios</b> para responder las preguntas el Ejercicio 2.',
+        hint: '✅ Haz clic en "Finalizar"',
+        target: () => document.querySelectorAll('.tab-btn')[2],
+        waitFor: null,
+        isFinal: true
+      }
+    ]
+  },
+
+  split: {
+    title: 'Ejercicio 3 — Red Dividida',
+    steps: [
+      {
+        title: 'Cargar red dividida',
+        text: 'Carga el escenario de red sin confianza entre grupos. Haz clic en <b>⚠️ Red Dividida</b>.',
+        hint: '👆 Haz clic en el botón resaltado',
+        target: () => document.querySelector("button[onclick=\"loadScenario('split')\"]"),
+        waitFor: 'scenario:split'
+      },
+      {
+        title: '¡Alerta: sin intersección!',
+        text: 'El indicador <b>Intersección de Quórum</b> está en <span style="color:#ef4444">❌ rojo</span>. Existen 2 grupos aislados: <b>{Alice, Bob}</b> y <b>{Chad, Daisy}</b> que no comparten confianza.',
+        hint: '👀 Observa el indicador ROJO — la red es insegura',
+        target: () => document.getElementById('qi-status'),
+        waitFor: null
+      },
+      {
+        title: 'Configura votos en conflicto',
+        text: 'Asigna los votos así para simular un desacuerdo total:<br><b>Alice = Pizza 🍕, Bob = Pizza 🍕</b><br><b>Chad = Burger 🍔, Daisy = Burger 🍔</b>',
+        hint: '👆 Configura los votos en el panel derecho',
+        target: () => document.getElementById('vote-inputs'),
+        waitFor: null
+      },
+      {
+        title: '¡Simula la bifurcación!',
+        text: 'Presiona <b>▶ Simular</b> para ver qué ocurre cuando 2 quórums no se intersectan y cada grupo vota diferente.',
+        hint: '👆 Haz clic en "▶ Simular"',
+        target: () => document.querySelector("button[onclick=\"runSimulation()\"]"),
+        waitFor: 'simulate'
+      },
+      {
+        title: 'El resultado: bifurcación (fork)',
+        text: 'Sin consenso unánime: cada grupo "confirmó" su propio valor. Esto es un <b>fork</b>. En una blockchain real, significaría <em>doble gasto</em>.<br><br>Por eso la <b>intersección de quórum</b> no es opcional: es una garantía de seguridad fundamental del SCP.',
+        hint: '🤔 Lee el registro y reflexiona',
+        target: () => document.getElementById('events-log'),
+        waitFor: null
+      },
+      {
+        title: '🎉 ¡Ejercicio 3 completado!',
+        text: 'Comprendiste por qué la <b>Intersección de Quórum</b> es crítica.<br><br>Ve a <b>✏️ Ejercicios</b> para la pregunta avanzada: ¿cómo agregar un nodo "puente" que repare la red?',
+        hint: '✅ Haz clic en "Finalizar"',
+        target: () => document.querySelectorAll('.tab-btn')[2],
+        waitFor: null,
+        isFinal: true
+      }
+    ]
+  }
+};
+
+let currentTour     = null;
+let currentTourStep = 0;
+let tourHighlightEl = null;
+
+function openTourSelector() {
+  document.getElementById('tour-selector').classList.add('open');
+}
+function closeTourSelector() {
+  document.getElementById('tour-selector').classList.remove('open');
+}
+
+function startTour(tourId) {
+  closeTourSelector();
+  currentTour     = TOURS[tourId];
+  currentTourStep = 0;
+  // Switch to Simulador tab
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-simulador').classList.add('active');
+  document.querySelectorAll('.tab-btn')[0].classList.add('active');
+  renderGraph();
+  showTourStepUI(0);
+}
+
+function showTourStepUI(idx) {
+  if (!currentTour || idx >= currentTour.steps.length) { endTour(); return; }
+  const step  = currentTour.steps[idx];
+  const total = currentTour.steps.length;
+
+  document.getElementById('tour-step-badge').textContent = `Paso ${idx+1}/${total}`;
+  document.getElementById('tour-title').textContent      = step.title;
+  document.getElementById('tour-text').innerHTML         = step.text;
+  document.getElementById('tour-hint').textContent       = step.hint || '';
+  document.getElementById('tour-progress-bar').style.width = `${((idx+1)/total)*100}%`;
+
+  const nextBtn = document.getElementById('tour-next-btn');
+  if (step.isFinal) {
+    nextBtn.textContent     = '🏁 Finalizar';
+    nextBtn.style.opacity   = '1';
+  } else if (step.waitFor) {
+    nextBtn.textContent     = 'Siguiente →';
+    nextBtn.style.opacity   = '0.45';
+    nextBtn.title           = 'Completa la acción indicada para continuar';
+  } else {
+    nextBtn.textContent     = 'Siguiente →';
+    nextBtn.style.opacity   = '1';
+    nextBtn.title           = '';
+  }
+
+  document.getElementById('tour-card').style.display = 'block';
+
+  // Remove previous highlight
+  if (tourHighlightEl) {
+    tourHighlightEl.classList.remove('tour-highlight');
+    tourHighlightEl = null;
+  }
+  if (step.target) {
+    const el = step.target();
+    if (el) {
+      el.classList.add('tour-highlight');
+      tourHighlightEl = el;
+      setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+    }
+  }
+}
+
+function tourNext() {
+  if (!currentTour) return;
+  const step = currentTour.steps[currentTourStep];
+  if (step && step.waitFor) return; // blocked until action
+  if (step && step.isFinal) { endTour(); return; }
+  currentTourStep++;
+  showTourStepUI(currentTourStep);
+}
+
+function tourSkip() {
+  if (confirm('¿Seguro que quieres saltar la guía interactiva?')) endTour();
+}
+
+function endTour() {
+  if (tourHighlightEl) {
+    tourHighlightEl.classList.remove('tour-highlight');
+    tourHighlightEl = null;
+  }
+  document.getElementById('tour-card').style.display = 'none';
+  currentTour     = null;
+  currentTourStep = 0;
+  logEvent('Guía interactiva finalizada.', 'info');
+}
+
+// ── Hooks que disparan el avance automático ──
+function tourTrigger(event, payload) {
+  if (!currentTour) return;
+  const step = currentTour.steps[currentTourStep];
+  if (!step || !step.waitFor) return;
+
+  let match = false;
+  if (step.waitFor === `scenario:${payload}` && event === 'scenario') match = true;
+  if (step.waitFor === 'simulate'   && event === 'simulate')  match = true;
+  if (step.waitFor === 'selectNode' && event === 'selectNode') match = true;
+  if (step.waitFor === `voteChange:${payload}` && event === 'voteChange') match = true;
+
+  if (match) {
+    logEvent(`✅ Guía: "${step.title}" completado.`, 'success');
+    // Unlock the "next" button visually for a moment, then auto-advance
+    const nextBtn = document.getElementById('tour-next-btn');
+    if (nextBtn) { nextBtn.style.opacity = '1'; nextBtn.title = ''; }
+    setTimeout(() => {
+      currentTourStep++;
+      showTourStepUI(currentTourStep);
+    }, 900);
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════════
