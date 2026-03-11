@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hecho en Oaxaca — Infraestructura Financiera Rural</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --panel2: #21262d;
+    --border: #30363d;
+    --accent: #f97316;
+    --accent2: #ea580c;
+    --green: #22c55e;
+    --teal: #14b8a6;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --yellow: #eab308;
+    --red: #ef4444;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --code-bg: #0d1117;
+    --stellar: #7c3aed;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: linear-gradient(135deg, #0d1117 0%, #1a0a00 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 24px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 800px 400px at 50% -50%, rgba(249,115,22,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 200px at 80% 120%, rgba(20,184,166,0.08) 0%, transparent 60%);
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(249,115,22,0.15);
+    border: 1px solid rgba(249,115,22,0.35);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 6vw, 64px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--muted);
+    max-width: 640px;
+    margin: 0 auto 32px;
+    position: relative;
+  }
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    position: relative;
+  }
+  .tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .tag-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ─── LAYOUT ─── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+  section:last-child { border-bottom: none; }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .section-label .num {
+    background: rgba(249,115,22,0.2);
+    border: 1px solid rgba(249,115,22,0.3);
+    border-radius: 6px;
+    padding: 1px 7px;
+    font-size: 11px;
+  }
+
+  h2 {
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .subtitle { color: var(--muted); font-size: 15px; margin-bottom: 36px; }
+
+  /* ─── CARDS ─── */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 14px;
+  }
+  .card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+  /* ─── STACK LAYER ─── */
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .stack-layer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 20px;
+    transition: border-color 0.2s;
+  }
+  .stack-layer:hover { border-color: var(--accent); }
+  .stack-layer .layer-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .stack-layer .layer-info { flex: 1; }
+  .stack-layer .layer-name { font-weight: 600; font-size: 14px; }
+  .stack-layer .layer-desc { font-size: 12px; color: var(--muted); }
+  .stack-layer .layer-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.06em;
+  }
+  .arrow-down {
+    text-align: center;
+    color: var(--muted);
+    font-size: 18px;
+    padding: 2px 0;
+  }
+
+  /* ─── FLOW ─── */
+  .flow { display: flex; flex-direction: column; gap: 0; }
+  .flow-step {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .flow-step-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .flow-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 2px solid;
+  }
+  .flow-connector {
+    width: 2px;
+    flex: 1;
+    min-height: 28px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+  .flow-body {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 8px;
+    flex: 1;
+  }
+  .flow-body strong { font-size: 15px; color: var(--text); }
+  .flow-body p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .flow-body .actors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .actor-pill {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── CODE ─── */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+  }
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+  }
+  .code-title { font-size: 13px; font-weight: 600; color: var(--muted); }
+  .code-lang {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: rgba(249,115,22,0.15);
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+  .code-content {
+    padding: 24px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .code-content pre { white-space: pre; }
+
+  /* Syntax highlighting */
+  .kw { color: #ff7b72; }
+  .fn { color: #d2a8ff; }
+  .str { color: #a5d6ff; }
+  .num { color: #79c0ff; }
+  .cmt { color: #8b949e; font-style: italic; }
+  .cls { color: #ffa657; }
+  .var { color: #e6edf3; }
+  .op { color: #ff7b72; }
+  .prop { color: #79c0ff; }
+  .bool { color: #79c0ff; }
+
+  /* ─── DB SCHEMA ─── */
+  .schema-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .table-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .table-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .table-icon { font-size: 18px; }
+  .table-name { flex: 1; }
+  .table-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.07em;
+  }
+  .field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 18px;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    font-size: 12px;
+  }
+  .field:last-child { border-bottom: none; }
+  .field-name { color: var(--text); font-family: 'Cascadia Code', monospace; flex: 1.2; }
+  .field-type { color: var(--teal); font-family: 'Cascadia Code', monospace; font-size: 11px; flex: 1; }
+  .field-note { color: var(--muted); font-size: 11px; flex: 1.5; text-align: right; }
+  .field-pk { color: var(--yellow); font-size: 10px; font-weight: 700; }
+  .field-fk { color: var(--blue); font-size: 10px; font-weight: 700; }
+
+  /* ─── UX REQUIREMENTS ─── */
+  .req-list { display: flex; flex-direction: column; gap: 12px; }
+  .req-item {
+    display: flex;
+    gap: 14px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    align-items: flex-start;
+  }
+  .req-icon { font-size: 22px; flex-shrink: 0; width: 32px; text-align: center; }
+  .req-content { flex: 1; }
+  .req-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .req-desc { font-size: 13px; color: var(--muted); }
+  .req-priority {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    letter-spacing: 0.07em;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ─── METRICS ─── */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .metric {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .metric-val {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    display: block;
+  }
+  .metric-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ─── TABLE ─── */
+  .comparison {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .comparison th {
+    background: var(--panel2);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .comparison td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    vertical-align: middle;
+  }
+  .comparison tr:last-child td { border-bottom: none; }
+  .comparison tr:hover td { background: rgba(255,255,255,0.02); }
+  .table-wrap {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+  }
+  footer p { font-size: 13px; color: var(--muted); }
+  footer strong { color: var(--accent); }
+
+  /* ─── UTILS ─── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.06em;
+  }
+  .bg-green { background: rgba(34,197,94,0.15); color: var(--green); }
+  .bg-orange { background: rgba(249,115,22,0.15); color: var(--accent); }
+  .bg-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .bg-purple { background: rgba(168,85,247,0.15); color: var(--purple); }
+  .bg-teal { background: rgba(20,184,166,0.15); color: var(--teal); }
+  .bg-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
+  .bg-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .bg-stellar { background: rgba(124,58,237,0.15); color: var(--stellar); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 0;
+  }
+
+  @media (max-width: 600px) {
+    .hero { padding: 40px 16px 32px; }
+    .container { padding: 0 16px; }
+    section { padding: 40px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════
+     HERO
+═══════════════════════════════ -->
+<div class="hero">
+  <div class="hero-badge">
+    <span>🌽</span> MVP — Infraestructura Financiera Rural
+  </div>
+  <h1>Hecho en <span>Oaxaca</span></h1>
+  <p>
+    Plataforma de pagos globales, ahorro con rendimientos y liquidación en efectivo
+    para productores rurales de café, miel, madera y queso.
+  </p>
+  <div class="hero-tags">
+    <div class="tag"><span class="tag-dot" style="background:#7c3aed"></span>Stellar Network</div>
+    <div class="tag"><span class="tag-dot" style="background:#14b8a6"></span>MXNe · Stablebonds</div>
+    <div class="tag"><span class="tag-dot" style="background:#f97316"></span>Etherfuse</div>
+    <div class="tag"><span class="tag-dot" style="background:#3b82f6"></span>BlindPay / AlfredPay</div>
+    <div class="tag"><span class="tag-dot" style="background:#22c55e"></span>SPEI Ramp</div>
+    <div class="tag"><span class="tag-dot" style="background:#eab308"></span>Node.js · Python</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════
+     MÉTRICAS OBJETIVO
+═══════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label"><span class="num">00</span> Objetivo del MVP</div>
+    <h2>¿Por qué este proyecto importa?</h2>
+    <p class="subtitle">Zonas con baja bancarización, alta informalidad y dependencia de intermediarios costosos.</p>
+
+    <div class="metrics">
+      <div class="metric">
+        <span class="metric-val">&lt; $0.01</span>
+        <div class="metric-label">Comisión por tx en Stellar</div>
+      </div>
+      <div class="metric">
+        <span class="metric-val">~5s</span>
+        <div class="metric-label">Confirmación de bloque</div>
+      </div>
+      <div class="metric">
+        <span class="metric-val">~9%</span>
+        <div class="metric-label">Rendimiento anual CETES 2025</div>
+      </div>
+      <div class="metric">
+        <span class="metric-val">3</span>
+        <div class="metric-label">Pasos para cobrar desde el extranjero</div>
+      </div>
+      <div class="metric">
+        <span class="metric-val">0</span>
+        <div class="metric-label">Cuenta bancaria requerida para productor</div>
+      </div>
+    </div>
+
+    <div class="grid-4">
+      <div class="card">
+        <div class="card-icon bg-green">☕</div>
+        <h3>Cafetaleros</h3>
+        <p>Reciben pagos de compradores en EU/Europa directamente a su billetera digital.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:rgba(234,179,8,0.15)">🍯</div>
+        <h3>Apicultores</h3>
+        <p>Ahorran sus ingresos en MXNe y generan rendimientos automáticos con Stablebonds.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:rgba(139,92,246,0.15)">🪵</div>
+        <h3>Madereros</h3>
+        <p>Contratos de venta tokenizados; el pago se libera al confirmar entrega.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon" style="background:rgba(249,115,22,0.15)">🧀</div>
+        <h3>Queseros</h3>
+        <p>Retiran en efectivo en tiendas o corresponsales bancarios mediante SPEI.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════
+     STACK TECNOLÓGICO
+═══════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label"><span class="num">01</span> Pila Tecnológica</div>
+    <h2>Stack del MVP</h2>
+    <p class="subtitle">Capas ordenadas de usuario final hasta la blockchain, con los servicios de terceros que conectan cada nivel.</p>
+
+    <div class="grid-2">
+      <div class="stack">
+
+        <div class="stack-layer">
+          <div class="layer-icon bg-green">📱</div>
+          <div class="layer-info">
+            <div class="layer-name">Frontend — Web-App PWA</div>
+            <div class="layer-desc">React / Next.js · Offline-first · Diseño simplificado para poca conectividad</div>
+          </div>
+          <span class="layer-badge bg-blue">Capa UI</span>
+        </div>
+        <div class="arrow-down">↓</div>
+
+        <div class="stack-layer">
+          <div class="layer-icon bg-orange">⚙️</div>
+          <div class="layer-info">
+            <div class="layer-name">Backend — API REST</div>
+            <div class="layer-desc">Node.js (Express) o Python (FastAPI) · JWT Auth · Rate limiting</div>
+          </div>
+          <span class="layer-badge bg-orange">Business Logic</span>
+        </div>
+        <div class="arrow-down">↓</div>
+
+        <div class="stack-layer">
+          <div class="layer-icon bg-stellar">⭐</div>
+          <div class="layer-info">
+            <div class="layer-name">Stellar SDK</div>
+            <div class="layer-desc">@stellar/stellar-sdk · Horizon API · Creación de cuentas, pagos, trust lines</div>
+          </div>
+          <span class="layer-badge bg-stellar">Blockchain Layer</span>
+        </div>
+        <div class="arrow-down">↓</div>
+
+        <div class="stack-layer">
+          <div class="layer-icon bg-teal">🏦</div>
+          <div class="layer-info">
+            <div class="layer-name">Etherfuse API</div>
+            <div class="layer-desc">MXNe mint/burn · Stablebonds CETES · Gestión de rendimientos</div>
+          </div>
+          <span class="layer-badge bg-teal">Asset Layer</span>
+        </div>
+        <div class="arrow-down">↓</div>
+
+        <div class="stack-layer">
+          <div class="layer-icon bg-blue">🔄</div>
+          <div class="layer-info">
+            <div class="layer-name">BlindPay / AlfredPay</div>
+            <div class="layer-desc">Off-ramp MXNe → SPEI · Transferencia bancaria en MXN</div>
+          </div>
+          <span class="layer-badge bg-blue">Off-ramp</span>
+        </div>
+        <div class="arrow-down">↓</div>
+
+        <div class="stack-layer">
+          <div class="layer-icon" style="background:rgba(34,197,94,0.15)">💵</div>
+          <div class="layer-info">
+            <div class="layer-name">Efectivo / SPEI</div>
+            <div class="layer-desc">Banco o corresponsal local · El productor retira en Putla o Sierra</div>
+          </div>
+          <span class="layer-badge bg-green">Liquidación</span>
+        </div>
+
+      </div>
+
+      <div>
+        <h3 style="font-size:16px; font-weight:600; margin-bottom:16px; color:var(--muted)">Comparativa de Off-Ramps</h3>
+        <div class="table-wrap">
+          <table class="comparison">
+            <thead>
+              <tr>
+                <th>Característica</th>
+                <th>BlindPay</th>
+                <th>AlfredPay</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Método de pago</td>
+                <td>SPEI / CLABE</td>
+                <td>SPEI / OXXO / Efectivo</td>
+              </tr>
+              <tr>
+                <td>KYC requerido</td>
+                <td>Básico (CURP)</td>
+                <td>Básico (CURP)</td>
+              </tr>
+              <tr>
+                <td>Fee estimado</td>
+                <td>~0.5%</td>
+                <td>~0.8%</td>
+              </tr>
+              <tr>
+                <td>Tiempo liquidación</td>
+                <td>~2 min (SPEI)</td>
+                <td>~5 min</td>
+              </tr>
+              <tr>
+                <td>API REST</td>
+                <td><span class="badge bg-green">✓ Disponible</span></td>
+                <td><span class="badge bg-green">✓ Disponible</span></td>
+              </tr>
+              <tr>
+                <td>Sin cuenta bancaria</td>
+                <td><span class="badge bg-red">No</span></td>
+                <td><span class="badge bg-green">Sí (OXXO)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+            <span style="font-size:20px">💡</span>
+            <strong style="font-size:14px">Recomendación MVP</strong>
+          </div>
+          <p style="font-size:13px; color:var(--muted)">
+            Usa <strong style="color:var(--accent)">AlfredPay</strong> como off-ramp primario por su soporte a OXXO (efectivo sin cuenta bancaria),
+            crítico para zonas rurales. Implementa BlindPay como fallback para usuarios con cuenta CLABE.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════
+     ARQUITECTURA API
+═══════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label"><span class="num">02</span> Arquitectura API</div>
+    <h2>Diseño del Backend</h2>
+    <p class="subtitle">Cómo conectar el SDK de Stellar con las APIs de BlindPay y Etherfuse en Node.js.</p>
+
+    <div class="grid-3" style="margin-bottom:32px">
+      <div class="card">
+        <div class="card-icon bg-stellar">⭐</div>
+        <h3>Stellar Horizon</h3>
+        <p>SDK oficial para crear cuentas (keypairs), gestionar trust lines de MXNe, enviar pagos y subscribirse a eventos vía SSE.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon bg-teal">🔑</div>
+        <h3>Etherfuse API</h3>
+        <p>REST API con clave privada para minar/quemar MXNe y mover fondos a Stablebonds (CETES) que generan rendimiento diario.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon bg-blue">🔄</div>
+        <h3>BlindPay / AlfredPay</h3>
+        <p>Webhooks entrantes notifican pagos completados. API de salida para iniciar transferencias SPEI con CLABE destino.</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-title">src/services/stellarService.js — Inicialización y health-check</span>
+        <span class="code-lang">Node.js</span>
+      </div>
+      <div class="code-content"><pre><span class="cmt">// ───────────────────────────────────────────────────────────────
+// stellarService.js — Capa de abstracción sobre el SDK de Stellar
+// Conecta con Etherfuse (MXNe) y proveedores de off-ramp
+// ───────────────────────────────────────────────────────────────</span>
+<span class="kw">const</span> StellarSdk <span class="op">=</span> <span class="fn">require</span>(<span class="str">'@stellar/stellar-sdk'</span>);
+<span class="kw">const</span> axios     <span class="op">=</span> <span class="fn">require</span>(<span class="str">'axios'</span>);
+
+<span class="cmt">// ─── Config ────────────────────────────────────────────────────</span>
+<span class="kw">const</span> NETWORK <span class="op">=</span> process.env.<span class="prop">STELLAR_NETWORK</span> <span class="op">===</span> <span class="str">'mainnet'</span>
+  <span class="op">?</span> StellarSdk.Networks.<span class="prop">PUBLIC</span>
+  <span class="op">:</span> StellarSdk.Networks.<span class="prop">TESTNET</span>;
+
+<span class="kw">const</span> server <span class="op">=</span> <span class="kw">new</span> StellarSdk.<span class="cls">Horizon.Server</span>(
+  process.env.<span class="prop">STELLAR_NETWORK</span> <span class="op">===</span> <span class="str">'mainnet'</span>
+    <span class="op">?</span> <span class="str">'https://horizon.stellar.org'</span>
+    <span class="op">:</span> <span class="str">'https://horizon-testnet.stellar.org'</span>
+);
+
+<span class="cmt">// Emisor oficial de MXNe en Stellar (Etherfuse)</span>
+<span class="kw">const</span> MXNE_ISSUER <span class="op">=</span> process.env.<span class="prop">MXNE_ISSUER_ADDRESS</span>;
+<span class="kw">const</span> MXNe <span class="op">=</span> <span class="kw">new</span> StellarSdk.<span class="cls">Asset</span>(<span class="str">'MXNe'</span>, MXNE_ISSUER);
+
+<span class="cmt">// ─── Crear billetera para nuevo productor ──────────────────────</span>
+<span class="kw">async function</span> <span class="fn">crearBilletera</span>(nombreProductor, municipio) {
+  <span class="cmt">// 1. Generar par de llaves criptográficas ed25519</span>
+  <span class="kw">const</span> par <span class="op">=</span> StellarSdk.<span class="cls">Keypair</span>.<span class="fn">random</span>();
+
+  <span class="cmt">// 2. Fondear cuenta con Friendbot (testnet) o cuenta maestra (mainnet)</span>
+  <span class="kw">if</span> (process.env.<span class="prop">STELLAR_NETWORK</span> <span class="op">!==</span> <span class="str">'mainnet'</span>) {
+    <span class="kw">await</span> axios.<span class="fn">get</span>(<span class="str">`https://friendbot.stellar.org?addr=<span class="kw">${par.publicKey()}</span>`</span>);
+  } <span class="kw">else</span> {
+    <span class="kw">await</span> <span class="fn">fondearDesdeMaestra</span>(par.<span class="fn">publicKey</span>(), <span class="str">'1.5'</span>); <span class="cmt">// mínimo XLM</span>
+  }
+
+  <span class="cmt">// 3. Establecer trust line para MXNe</span>
+  <span class="kw">const</span> cuenta <span class="op">=</span> <span class="kw">await</span> server.<span class="fn">loadAccount</span>(par.<span class="fn">publicKey</span>());
+  <span class="kw">const</span> tx <span class="op">=</span> <span class="kw">new</span> StellarSdk.<span class="cls">TransactionBuilder</span>(cuenta, {
+    fee: <span class="kw">await</span> server.<span class="fn">fetchBaseFee</span>(),
+    networkPassphrase: NETWORK,
+  })
+  .<span class="fn">addOperation</span>(StellarSdk.Operation.<span class="fn">changeTrust</span>({ asset: MXNe }))
+  .<span class="fn">setTimeout</span>(<span class="num">30</span>)
+  .<span class="fn">build</span>();
+
+  tx.<span class="fn">sign</span>(par);
+  <span class="kw">await</span> server.<span class="fn">submitTransaction</span>(tx);
+
+  <span class="cmt">// ⚠️  La llave secreta NUNCA se almacena en texto plano.
+  // Cifrar con AES-256-GCM usando PIN del usuario antes de persistir.</span>
+  <span class="kw">return</span> {
+    <span class="prop">publicKey</span>:  par.<span class="fn">publicKey</span>(),
+    <span class="prop">secretKey</span>:  par.<span class="fn">secret</span>(),   <span class="cmt">// devolver UNA vez al cliente para cifrado en cliente</span>
+    nombreProductor,
+    municipio,
+    <span class="prop">createdAt</span>: <span class="kw">new</span> <span class="cls">Date</span>().<span class="fn">toISOString</span>(),
+  };
+}
+
+<span class="cmt">// ─── Enviar MXNe a productor (pago incoming) ──────────────────</span>
+<span class="kw">async function</span> <span class="fn">enviarMXNe</span>(destPublicKey, monto, memo) {
+  <span class="kw">const</span> maestraKeypair <span class="op">=</span> StellarSdk.<span class="cls">Keypair</span>.<span class="fn">fromSecret</span>(process.env.<span class="prop">MAESTRA_SECRET</span>);
+  <span class="kw">const</span> maestra <span class="op">=</span> <span class="kw">await</span> server.<span class="fn">loadAccount</span>(maestraKeypair.<span class="fn">publicKey</span>());
+
+  <span class="kw">const</span> tx <span class="op">=</span> <span class="kw">new</span> StellarSdk.<span class="cls">TransactionBuilder</span>(maestra, {
+    fee: <span class="kw">await</span> server.<span class="fn">fetchBaseFee</span>(),
+    networkPassphrase: NETWORK,
+  })
+  .<span class="fn">addOperation</span>(StellarSdk.Operation.<span class="fn">payment</span>({
+    <span class="prop">destination</span>: destPublicKey,
+    <span class="prop">asset</span>:       MXNe,
+    <span class="prop">amount</span>:      monto.<span class="fn">toString</span>(),
+  }))
+  .<span class="fn">addMemo</span>(StellarSdk.Memo.<span class="fn">text</span>(memo.<span class="fn">substring</span>(<span class="num">0</span>, <span class="num">28</span>)))
+  .<span class="fn">setTimeout</span>(<span class="num">30</span>)
+  .<span class="fn">build</span>();
+
+  tx.<span class="fn">sign</span>(maestraKeypair);
+  <span class="kw">return</span> server.<span class="fn">submitTransaction</span>(tx);
+}
+
+module.exports <span class="op">=</span> { crearBilletera, enviarMXNe };</pre></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════
+     FLUJO DE FONDOS
+═══════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label"><span class="num">03</span> Flujo de Fondos</div>
+    <h2>Del pago global al efectivo en Putla</h2>
+    <p class="subtitle">Recorrido completo de un pago internacional hasta que el productor retira en efectivo o genera rendimientos.</p>
+
+    <div class="flow">
+
+      <div class="flow-step">
+        <div class="flow-step-line">
+          <div class="flow-num" style="background:rgba(249,115,22,0.15);border-color:var(--accent);color:var(--accent)">1</div>
+          <div class="flow-connector"></div>
+        </div>
+        <div class="flow-body">
+          <strong>Cliente extranjero inicia el pago</strong>
+          <p>Un comprador en EU/Europa paga con USD, EUR o USDC desde su banco o wallet. El importe se convierte a MXNe usando el tipo de cambio de Etherfuse en tiempo real.</p>
+          <div class="actors">
+            <span class="actor-pill bg-blue">💳 Comprador (EU/Europa)</span>
+            <span class="actor-pill bg-teal">🔁 Etherfuse FX Engine</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-step-line">
+          <div class="flow-num" style="background:rgba(20,184,166,0.15);border-color:var(--teal);color:var(--teal)">2</div>
+          <div class="flow-connector"></div>
+        </div>
+        <div class="flow-body">
+          <strong>Etherfuse mina MXNe en Stellar</strong>
+          <p>La API de Etherfuse recibe el fondeo en USD/USDC, valida el monto y mina la cantidad equivalente de MXNe en la blockchain de Stellar (&lt;5 segundos de confirmación).</p>
+          <div class="actors">
+            <span class="actor-pill bg-teal">🏦 Etherfuse Mint</span>
+            <span class="actor-pill bg-stellar">⭐ Stellar Network</span>
+            <span class="actor-pill bg-green">💱 MXNe Token</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-step-line">
+          <div class="flow-num" style="background:rgba(124,58,237,0.15);border-color:var(--stellar);color:var(--stellar)">3</div>
+          <div class="flow-connector"></div>
+        </div>
+        <div class="flow-body">
+          <strong>Backend recibe el pago y acredita al productor</strong>
+          <p>El backend escucha el streaming de pagos en Horizon (SSE). Al detectar el pago al "hot wallet" de la plataforma, envía MXNe a la billetera del productor correspondiente al ID del pedido.</p>
+          <div class="actors">
+            <span class="actor-pill bg-orange">⚙️ Backend API</span>
+            <span class="actor-pill bg-stellar">📡 Horizon Streaming</span>
+            <span class="actor-pill bg-green">👛 Billetera Productor</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-step-line">
+          <div class="flow-num" style="background:rgba(234,179,8,0.15);border-color:var(--yellow);color:var(--yellow)">4</div>
+          <div class="flow-connector"></div>
+        </div>
+        <div class="flow-body">
+          <strong>Productor decide: Ahorrar o Retirar</strong>
+          <p>Desde la app, el productor (o su hijo) elige qué hacer con los MXNe recibidos. Sin seleccionar nada, el <em>default</em> es mover el 70% a Stablebonds automáticamente.</p>
+          <div class="actors">
+            <span class="actor-pill bg-green">💰 Guardar en Stablebonds (~9% APY)</span>
+            <span class="actor-pill bg-blue">🏧 Retirar en Efectivo (SPEI)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-step-line">
+          <div class="flow-num" style="background:rgba(34,197,94,0.15);border-color:var(--green);color:var(--green)">5A</div>
+          <div class="flow-connector"></div>
+        </div>
+        <div class="flow-body">
+          <strong>Ruta A: Ahorro con rendimientos (Stablebonds)</strong>
+          <p>El backend llama a la API de Etherfuse para mover MXNe del productor a Stablebonds (CETES tokenizados). Los rendimientos se acumulan diariamente y se reflejan en el saldo visible de la app.</p>
+          <div class="actors">
+            <span class="actor-pill bg-teal">📈 Etherfuse Stablebonds</span>
+            <span class="actor-pill bg-yellow">🏛️ CETES (Gobierno MX)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-step-line">
+          <div class="flow-num" style="background:rgba(59,130,246,0.15);border-color:var(--blue);color:var(--blue)">5B</div>
+          <div class="flow-connector" style="background:transparent"></div>
+        </div>
+        <div class="flow-body">
+          <strong>Ruta B: Retiro en efectivo vía SPEI</strong>
+          <p>El backend quema MXNe vía Etherfuse, recibe MXN en la cuenta custodio y llama a AlfredPay/BlindPay para enviar un SPEI a la CLABE del productor o generar un código de retiro OXXO.</p>
+          <div class="actors">
+            <span class="actor-pill bg-orange">🔥 Etherfuse Burn</span>
+            <span class="actor-pill bg-blue">🔄 BlindPay / AlfredPay</span>
+            <span class="actor-pill bg-green">💵 SPEI / OXXO</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════
+     BASE DE DATOS
+═══════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label"><span class="num">04</span> Base de Datos</div>
+    <h2>Esquema de Base de Datos</h2>
+    <p class="subtitle">PostgreSQL o PlanetScale (MySQL serverless). Diseño mínimo y escalable para el MVP.</p>
+
+    <div class="schema-grid">
+
+      <!-- productores -->
+      <div class="table-card">
+        <div class="table-header">
+          <span class="table-icon">👨‍🌾</span>
+          <span class="table-name">productores</span>
+          <span class="table-badge bg-orange">Core</span>
+        </div>
+        <div class="field"><span class="field-pk">🔑 PK</span> <span class="field-name">id</span> <span class="field-type">UUID</span> <span class="field-note">auto-generated</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">nombre</span> <span class="field-type">VARCHAR(120)</span> <span class="field-note">requerido</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">telefono</span> <span class="field-type">VARCHAR(15)</span> <span class="field-note">único · +52...</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">municipio</span> <span class="field-type">VARCHAR(80)</span> <span class="field-note">ej: Putla</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">curp</span> <span class="field-type">VARCHAR(18)</span> <span class="field-note">KYC básico</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">stellar_address</span> <span class="field-type">VARCHAR(60)</span> <span class="field-note">G... public key</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">clabe_destino</span> <span class="field-type">VARCHAR(20)</span> <span class="field-note">off-ramp SPEI</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">kyc_nivel</span> <span class="field-type">TINYINT</span> <span class="field-note">0=pendiente 1=básico</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">created_at</span> <span class="field-type">TIMESTAMP</span> <span class="field-note">DEFAULT NOW()</span></div>
+      </div>
+
+      <!-- productos -->
+      <div class="table-card">
+        <div class="table-header">
+          <span class="table-icon">🧀</span>
+          <span class="table-name">productos</span>
+          <span class="table-badge bg-teal">Catálogo</span>
+        </div>
+        <div class="field"><span class="field-pk">🔑 PK</span> <span class="field-name">id</span> <span class="field-type">UUID</span> <span class="field-note"></span></div>
+        <div class="field"><span class="field-fk">🔗 FK</span> <span class="field-name">productor_id</span> <span class="field-type">UUID</span> <span class="field-note">→ productores</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">categoria</span> <span class="field-type">ENUM</span> <span class="field-note">cafe|miel|madera|queso</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">nombre</span> <span class="field-type">VARCHAR(120)</span> <span class="field-note">ej: Café Arábica SHG</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">descripcion</span> <span class="field-type">TEXT</span> <span class="field-note">descripción larga</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">precio_mxne</span> <span class="field-type">DECIMAL(14,4)</span> <span class="field-note">precio en MXNe</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">unidad</span> <span class="field-type">VARCHAR(20)</span> <span class="field-note">kg|litro|pieza</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">activo</span> <span class="field-type">BOOLEAN</span> <span class="field-note">DEFAULT true</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">imagen_url</span> <span class="field-type">TEXT</span> <span class="field-note">CDN link</span></div>
+      </div>
+
+      <!-- pagos -->
+      <div class="table-card">
+        <div class="table-header">
+          <span class="table-icon">💸</span>
+          <span class="table-name">pagos</span>
+          <span class="table-badge bg-blue">Transacciones</span>
+        </div>
+        <div class="field"><span class="field-pk">🔑 PK</span> <span class="field-name">id</span> <span class="field-type">UUID</span> <span class="field-note"></span></div>
+        <div class="field"><span class="field-fk">🔗 FK</span> <span class="field-name">productor_id</span> <span class="field-type">UUID</span> <span class="field-note">→ productores</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">tx_hash_stellar</span> <span class="field-type">VARCHAR(70)</span> <span class="field-note">hash blockchain</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">monto_mxne</span> <span class="field-type">DECIMAL(14,4)</span> <span class="field-note">monto recibido</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">origen_divisa</span> <span class="field-type">VARCHAR(5)</span> <span class="field-note">USD|EUR|USDC</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">monto_origen</span> <span class="field-type">DECIMAL(14,4)</span> <span class="field-note">monto original</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">estado</span> <span class="field-type">ENUM</span> <span class="field-note">pendiente|completado|fallido</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">memo</span> <span class="field-type">VARCHAR(28)</span> <span class="field-note">Stellar memo</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">created_at</span> <span class="field-type">TIMESTAMP</span> <span class="field-note">fecha de pago</span></div>
+      </div>
+
+      <!-- ahorros -->
+      <div class="table-card">
+        <div class="table-header">
+          <span class="table-icon">📈</span>
+          <span class="table-name">ahorros</span>
+          <span class="table-badge bg-green">Rendimientos</span>
+        </div>
+        <div class="field"><span class="field-pk">🔑 PK</span> <span class="field-name">id</span> <span class="field-type">UUID</span> <span class="field-note"></span></div>
+        <div class="field"><span class="field-fk">🔗 FK</span> <span class="field-name">productor_id</span> <span class="field-type">UUID</span> <span class="field-note">→ productores</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">tipo</span> <span class="field-type">ENUM</span> <span class="field-note">mxne|stablebond</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">monto</span> <span class="field-type">DECIMAL(14,4)</span> <span class="field-note">saldo actual</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">rendimiento_acum</span> <span class="field-type">DECIMAL(14,6)</span> <span class="field-note">ganancia total</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">etherfuse_position_id</span> <span class="field-type">VARCHAR(60)</span> <span class="field-note">ID en Etherfuse</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">fecha_inicio</span> <span class="field-type">DATE</span> <span class="field-note">apertura</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">ultima_actualizacion</span> <span class="field-type">TIMESTAMP</span> <span class="field-note">sync diario</span></div>
+      </div>
+
+      <!-- retiros -->
+      <div class="table-card">
+        <div class="table-header">
+          <span class="table-icon">🏧</span>
+          <span class="table-name">retiros</span>
+          <span class="table-badge bg-purple">Off-ramp</span>
+        </div>
+        <div class="field"><span class="field-pk">🔑 PK</span> <span class="field-name">id</span> <span class="field-type">UUID</span> <span class="field-note"></span></div>
+        <div class="field"><span class="field-fk">🔗 FK</span> <span class="field-name">productor_id</span> <span class="field-type">UUID</span> <span class="field-note">→ productores</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">monto_mxne</span> <span class="field-type">DECIMAL(14,4)</span> <span class="field-note">quemado</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">monto_mxn</span> <span class="field-type">DECIMAL(14,2)</span> <span class="field-note">recibido</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">metodo</span> <span class="field-type">ENUM</span> <span class="field-note">spei|oxxo|efectivo</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">proveedor</span> <span class="field-type">ENUM</span> <span class="field-note">alfredpay|blindpay</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">referencia_externa</span> <span class="field-type">VARCHAR(80)</span> <span class="field-note">ID del proveedor</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">estado</span> <span class="field-type">ENUM</span> <span class="field-note">pendiente|liquidado|error</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">created_at</span> <span class="field-type">TIMESTAMP</span> <span class="field-note"></span></div>
+      </div>
+
+      <!-- notificaciones -->
+      <div class="table-card">
+        <div class="table-header">
+          <span class="table-icon">🔔</span>
+          <span class="table-name">notificaciones</span>
+          <span class="table-badge bg-yellow">UX</span>
+        </div>
+        <div class="field"><span class="field-pk">🔑 PK</span> <span class="field-name">id</span> <span class="field-type">UUID</span> <span class="field-note"></span></div>
+        <div class="field"><span class="field-fk">🔗 FK</span> <span class="field-name">productor_id</span> <span class="field-type">UUID</span> <span class="field-note">→ productores</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">tipo</span> <span class="field-type">ENUM</span> <span class="field-note">pago|retiro|rendimiento</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">mensaje</span> <span class="field-type">TEXT</span> <span class="field-note">texto en español simple</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">canal</span> <span class="field-type">ENUM</span> <span class="field-note">sms|whatsapp|push</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">leido</span> <span class="field-type">BOOLEAN</span> <span class="field-note">DEFAULT false</span></div>
+        <div class="field"><span class="field-fk"></span> <span class="field-name">created_at</span> <span class="field-type">TIMESTAMP</span> <span class="field-note"></span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════
+     INTERFAZ / FRONTEND
+═══════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label"><span class="num">05</span> Interfaz de Usuario</div>
+    <h2>Requerimientos del Frontend</h2>
+    <p class="subtitle">Web-App Progressive (PWA) diseñada para operar con poca conectividad y usuarios con poco conocimiento técnico.</p>
+
+    <div class="grid-2" style="margin-bottom:32px">
+      <div class="req-list">
+        <div class="req-item">
+          <span class="req-icon">📶</span>
+          <div class="req-content">
+            <div class="req-title">Diseño Offline-First</div>
+            <div class="req-desc">Service Worker + IndexedDB para caché local. Las operaciones se encolan y sincronizan cuando regresa la señal. La app debe funcionar en 2G intermitente.</div>
+          </div>
+          <span class="req-priority bg-red">CRÍTICO</span>
+        </div>
+        <div class="req-item">
+          <span class="req-icon">💰</span>
+          <div class="req-content">
+            <div class="req-title">Saldo en "Pesos" — Sin jerga cripto</div>
+            <div class="req-desc">Mostrar siempre el equivalente en MXN. Nunca mostrar "MXNe", "Stellar" o "blockchain". El productor ve: "Tu saldo: $1,450 pesos" y "Ganaste $12 pesos esta semana".</div>
+          </div>
+          <span class="req-priority bg-red">CRÍTICO</span>
+        </div>
+        <div class="req-item">
+          <span class="req-icon">📱</span>
+          <div class="req-content">
+            <div class="req-title">Mobile-First, Pantalla Pequeña</div>
+            <div class="req-desc">Optimizado para pantallas de 4-5 pulgadas. Fuentes grandes (mín. 16px). Botones táctiles de al menos 48×48px. Compatible con Android 7+ básico.</div>
+          </div>
+          <span class="req-priority bg-red">CRÍTICO</span>
+        </div>
+        <div class="req-item">
+          <span class="req-icon">🔢</span>
+          <div class="req-content">
+            <div class="req-title">Login por PIN de 4 dígitos + SMS OTP</div>
+            <div class="req-desc">Sin contraseñas complicadas. PIN de 4 dígitos + verificación por SMS (Twilio). Opción de huella biométrica si el dispositivo lo permite.</div>
+          </div>
+          <span class="req-priority bg-orange">ALTO</span>
+        </div>
+        <div class="req-item">
+          <span class="req-icon">🗣️</span>
+          <div class="req-content">
+            <div class="req-title">Lenguaje Natural y Pictogramas</div>
+            <div class="req-desc">Usar íconos grandes y texto simple. "Cobrar" en lugar de "Recibir pago". "Guardar" en lugar de "Invertir". Soporte futuro para Zapoteco/Mixteco.</div>
+          </div>
+          <span class="req-priority bg-orange">ALTO</span>
+        </div>
+        <div class="req-item">
+          <span class="req-icon">🔔</span>
+          <div class="req-content">
+            <div class="req-title">Notificaciones por WhatsApp/SMS</div>
+            <div class="req-desc">Al recibir un pago: "¡Recibiste $500 pesos de Don Carlos! Ya los tienes en tu cuenta." Notificación diaria de rendimientos los lunes.</div>
+          </div>
+          <span class="req-priority bg-blue">MEDIO</span>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-size:16px; font-weight:600; margin-bottom:16px; color:var(--muted)">Pantallas del MVP (Relevo Generacional)</h3>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+
+          <div style="background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:16px 18px; display:flex; align-items:center; gap:12px;">
+            <span style="font-size:24px; flex-shrink:0">🏠</span>
+            <div>
+              <div style="font-weight:600; font-size:14px; margin-bottom:3px">Pantalla Principal — "Mi Dinero"</div>
+              <div style="font-size:12px; color:var(--muted)">Saldo total, saldo en ahorro, botón COBRAR grande y botón RETIRAR. Historial de últimos 3 movimientos.</div>
+            </div>
+            <span class="badge bg-green" style="flex-shrink:0">Pantalla 1</span>
+          </div>
+
+          <div style="background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:16px 18px; display:flex; align-items:center; gap:12px;">
+            <span style="font-size:24px; flex-shrink:0">📲</span>
+            <div>
+              <div style="font-weight:600; font-size:14px; margin-bottom:3px">Pantalla de Cobro — "Pedir Pago"</div>
+              <div style="font-size:12px; color:var(--muted)">Muestra un código QR y la dirección Stellar simplificada. El hijo puede compartirlo por WhatsApp al comprador.</div>
+            </div>
+            <span class="badge bg-blue" style="flex-shrink:0">Pantalla 2</span>
+          </div>
+
+          <div style="background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:16px 18px; display:flex; align-items:center; gap:12px;">
+            <span style="font-size:24px; flex-shrink:0">💳</span>
+            <div>
+              <div style="font-weight:600; font-size:14px; margin-bottom:3px">Pantalla de Retiro — "Sacar en Efectivo"</div>
+              <div style="font-size:12px; color:var(--muted)">Ingresar monto, seleccionar método (OXXO o banco), confirmar con PIN. Muestra código de cobro OXXO o confirmación SPEI.</div>
+            </div>
+            <span class="badge bg-orange" style="flex-shrink:0">Pantalla 3</span>
+          </div>
+
+          <div style="background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:16px 18px; display:flex; align-items:center; gap:12px;">
+            <span style="font-size:24px; flex-shrink:0">📊</span>
+            <div>
+              <div style="font-weight:600; font-size:14px; margin-bottom:3px">Pantalla de Ahorro — "Mi Alcancía"</div>
+              <div style="font-size:12px; color:var(--muted)">Gráfica simple de crecimiento mensual, rendimientos acumulados en pesos, y botón para mover más dinero al ahorro.</div>
+            </div>
+            <span class="badge bg-teal" style="flex-shrink:0">Pantalla 4</span>
+          </div>
+
+          <div style="background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:16px 18px; display:flex; align-items:center; gap:12px;">
+            <span style="font-size:24px; flex-shrink:0">🛒</span>
+            <div>
+              <div style="font-weight:600; font-size:14px; margin-bottom:3px">Pantalla de Productos — "Mis Productos"</div>
+              <div style="font-size:12px; color:var(--muted)">CRUD sencillo para agregar productos con foto, precio y descripción. Genera link de pago compartible.</div>
+            </div>
+            <span class="badge bg-purple" style="flex-shrink:0">Pantalla 5</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════
+     CÓDIGO — WALLET MADERERO PUTLA
+═══════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label"><span class="num">06</span> Código de Ejemplo</div>
+    <h2>Inicializar billetera: Productor de Madera en Putla</h2>
+    <p class="subtitle">Snippet completo para registrar a un nuevo productor y crear su billetera en Stellar con trust line de MXNe.</p>
+
+    <div class="code-block" style="margin-bottom:24px">
+      <div class="code-header">
+        <span class="code-title">scripts/registrarProductorMadera.js — Ejemplo de uso</span>
+        <span class="code-lang">Node.js</span>
+      </div>
+      <div class="code-content"><pre><span class="cmt">/**
+ * Registrar productor de madera en Putla, Oaxaca
+ * Ejecutar: node registrarProductorMadera.js
+ *
+ * Dependencias:
+ *   npm install @stellar/stellar-sdk axios dotenv
+ */</span>
+<span class="kw">require</span>(<span class="str">'dotenv'</span>).<span class="fn">config</span>();
+<span class="kw">const</span> StellarSdk <span class="op">=</span> <span class="fn">require</span>(<span class="str">'@stellar/stellar-sdk'</span>);
+<span class="kw">const</span> axios      <span class="op">=</span> <span class="fn">require</span>(<span class="str">'axios'</span>);
+
+<span class="cmt">// ─── Configuración ─────────────────────────────────────────────</span>
+<span class="kw">const</span> ES_TESTNET     <span class="op">=</span> process.env.<span class="prop">STELLAR_NETWORK</span> <span class="op">!==</span> <span class="str">'mainnet'</span>;
+<span class="kw">const</span> HORIZON_URL    <span class="op">=</span> ES_TESTNET
+  <span class="op">?</span> <span class="str">'https://horizon-testnet.stellar.org'</span>
+  <span class="op">:</span> <span class="str">'https://horizon.stellar.org'</span>;
+<span class="kw">const</span> NETWORK_PHRASE <span class="op">=</span> ES_TESTNET
+  <span class="op">?</span> StellarSdk.Networks.<span class="prop">TESTNET</span>
+  <span class="op">:</span> StellarSdk.Networks.<span class="prop">PUBLIC</span>;
+
+<span class="kw">const</span> server <span class="op">=</span> <span class="kw">new</span> StellarSdk.<span class="cls">Horizon.Server</span>(HORIZON_URL);
+
+<span class="cmt">// Emisor de MXNe (Etherfuse) — reemplazar con dirección real en mainnet</span>
+<span class="kw">const</span> MXNE_ISSUER <span class="op">=</span> process.env.<span class="prop">MXNE_ISSUER</span>
+  <span class="op">??</span> <span class="str">'GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YCZ'</span>; <span class="cmt">// testnet ejemplo</span>
+<span class="kw">const</span> MXNe <span class="op">=</span> <span class="kw">new</span> StellarSdk.<span class="cls">Asset</span>(<span class="str">'MXNe'</span>, MXNE_ISSUER);
+
+<span class="cmt">// ─── Datos del productor ────────────────────────────────────────</span>
+<span class="kw">const</span> PRODUCTOR <span class="op">=</span> {
+  <span class="prop">nombre</span>:    <span class="str">'Benito Ramírez Cruz'</span>,
+  <span class="prop">municipio</span>: <span class="str">'Putla Villa de Guerrero'</span>,
+  <span class="prop">estado</span>:    <span class="str">'Oaxaca'</span>,
+  <span class="prop">categoria</span>: <span class="str">'madera'</span>,
+  <span class="prop">telefono</span>:  <span class="str">'+529511234567'</span>,
+};
+
+<span class="cmt">// ─── Función principal ──────────────────────────────────────────</span>
+<span class="kw">async function</span> <span class="fn">registrarProductor</span>(datos) {
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">`\n🌽 Hecho en Oaxaca — Registrando productor de <span class="kw">${datos.categoria}</span>`</span>);
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">`   <span class="kw">${datos.nombre}</span> · <span class="kw">${datos.municipio}</span>, <span class="kw">${datos.estado}</span>\n`</span>);
+
+  <span class="cmt">// 1. Generar par de llaves criptográficas</span>
+  <span class="kw">const</span> keypair <span class="op">=</span> StellarSdk.<span class="cls">Keypair</span>.<span class="fn">random</span>();
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'🔑 Llave pública  :'</span>, keypair.<span class="fn">publicKey</span>());
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'🔒 Llave secreta  : [CIFRAR ANTES DE GUARDAR]'</span>);
+
+  <span class="cmt">// 2. Fondear cuenta en testnet con Friendbot (gratuito)</span>
+  <span class="kw">if</span> (ES_TESTNET) {
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'\n⏳ Fondeando cuenta en testnet...'</span>);
+    <span class="kw">const</span> res <span class="op">=</span> <span class="kw">await</span> axios.<span class="fn">get</span>(
+      <span class="str">`https://friendbot.stellar.org?addr=<span class="kw">${keypair.publicKey()}</span>`</span>
+    );
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'✅ Cuenta fondeada. TX:'</span>, res.data.<span class="prop">id</span>);
+  }
+
+  <span class="cmt">// 3. Cargar cuenta desde Horizon</span>
+  <span class="kw">const</span> cuenta <span class="op">=</span> <span class="kw">await</span> server.<span class="fn">loadAccount</span>(keypair.<span class="fn">publicKey</span>());
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'\n💫 Cuenta cargada. Secuencia:'</span>, cuenta.<span class="prop">sequenceNumber</span>());
+
+  <span class="cmt">// 4. Construir transacción con trust line hacia MXNe</span>
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'\n⏳ Estableciendo trust line MXNe...'</span>);
+  <span class="kw">const</span> fee <span class="op">=</span> <span class="kw">await</span> server.<span class="fn">fetchBaseFee</span>();
+
+  <span class="kw">const</span> tx <span class="op">=</span> <span class="kw">new</span> StellarSdk.<span class="cls">TransactionBuilder</span>(cuenta, {
+    fee,
+    networkPassphrase: NETWORK_PHRASE,
+  })
+  .<span class="fn">addOperation</span>(
+    StellarSdk.Operation.<span class="fn">changeTrust</span>({
+      <span class="prop">asset</span>:  MXNe,
+      <span class="prop">limit</span>: <span class="str">'1000000'</span>, <span class="cmt">// límite máximo en MXNe (1 millón de pesos)</span>
+    })
+  )
+  .<span class="fn">addMemo</span>(StellarSdk.Memo.<span class="fn">text</span>(<span class="str">'HechoEnOaxaca-Madera'</span>))
+  .<span class="fn">setTimeout</span>(<span class="num">30</span>)
+  .<span class="fn">build</span>();
+
+  <span class="cmt">// 5. Firmar y enviar</span>
+  tx.<span class="fn">sign</span>(keypair);
+  <span class="kw">const</span> resultado <span class="op">=</span> <span class="kw">await</span> server.<span class="fn">submitTransaction</span>(tx);
+
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'✅ Trust line establecida!'</span>);
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'   TX Hash:'</span>, resultado.<span class="prop">hash</span>);
+
+  <span class="cmt">// 6. Resultado para guardar en base de datos</span>
+  <span class="kw">const</span> registro <span class="op">=</span> {
+    ...datos,
+    <span class="prop">stellar_address</span>: keypair.<span class="fn">publicKey</span>(),
+    <span class="cmt">// ⚠️ NUNCA almacenar secret_key en texto plano en DB</span>
+    <span class="cmt">// Cifrar con AES-256-GCM usando el PIN del usuario:</span>
+    <span class="cmt">// secret_key_encrypted: await cifrarConPIN(keypair.secret(), pin)</span>
+    <span class="prop">trust_line_mxne</span>: <span class="bool">true</span>,
+    <span class="prop">trust_line_tx</span>:   resultado.<span class="prop">hash</span>,
+    <span class="prop">kyc_nivel</span>:       <span class="num">0</span>,
+    <span class="prop">created_at</span>:      <span class="kw">new</span> <span class="cls">Date</span>().<span class="fn">toISOString</span>(),
+  };
+
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'\n📦 Registro listo para DB:'</span>);
+  <span class="fn">console</span>.<span class="fn">log</span>(JSON.<span class="fn">stringify</span>(registro, <span class="bool">null</span>, <span class="num">2</span>));
+
+  <span class="kw">return</span> registro;
+}
+
+<span class="cmt">// ─── Ejecutar ───────────────────────────────────────────────────</span>
+<span class="fn">registrarProductor</span>(PRODUCTOR)
+  .<span class="fn">then</span>(() <span class="op">=></span> <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'\n🌽 ¡Productor registrado exitosamente!\n'</span>))
+  .<span class="fn">catch</span>(err <span class="op">=></span> {
+    <span class="fn">console</span>.<span class="fn">error</span>(<span class="str">'\n❌ Error:'</span>, err.<span class="prop">message</span>);
+    <span class="kw">if</span> (err.<span class="prop">response</span>?.<span class="prop">data</span>?.<span class="prop">extras</span>) {
+      <span class="fn">console</span>.<span class="fn">error</span>(<span class="str">'   Stellar extras:'</span>,
+        JSON.<span class="fn">stringify</span>(err.response.data.extras.<span class="prop">result_codes</span>));
+    }
+    process.<span class="fn">exit</span>(<span class="num">1</span>);
+  });</pre></div>
+    </div>
+
+    <!-- Variables de entorno -->
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-title">.env — Variables de entorno requeridas</span>
+        <span class="code-lang">ENV</span>
+      </div>
+      <div class="code-content"><pre><span class="cmt"># ─── Stellar ────────────────────────────────────────────────</span>
+<span class="prop">STELLAR_NETWORK</span><span class="op">=</span><span class="str">testnet</span>                <span class="cmt"># testnet | mainnet</span>
+<span class="prop">MXNE_ISSUER</span><span class="op">=</span><span class="str">GDUKMGUG...WYGZS</span>           <span class="cmt"># Dirección emisora de MXNe (Etherfuse)</span>
+<span class="prop">MAESTRA_SECRET</span><span class="op">=</span><span class="str">SXXXXXXXXXXXXXXXX</span>         <span class="cmt"># Cuenta custodio HOT WALLET — ¡NUNCA en Git!</span>
+
+<span class="cmt"># ─── Etherfuse ───────────────────────────────────────────────</span>
+<span class="prop">ETHERFUSE_API_KEY</span><span class="op">=</span><span class="str">ef_live_xxxxxxxxxx</span>    <span class="cmt"># Clave de API Etherfuse</span>
+<span class="prop">ETHERFUSE_API_URL</span><span class="op">=</span><span class="str">https://api.etherfuse.com/v1</span>
+
+<span class="cmt"># ─── Off-ramp ────────────────────────────────────────────────</span>
+<span class="prop">ALFREDPAY_API_KEY</span><span class="op">=</span><span class="str">ap_live_xxxxxxxxxx</span>
+<span class="prop">ALFREDPAY_API_URL</span><span class="op">=</span><span class="str">https://api.alfredpay.io/v1</span>
+<span class="prop">BLINDPAY_API_KEY</span><span class="op">=</span><span class="str">bp_live_xxxxxxxxxx</span>
+<span class="prop">BLINDPAY_API_URL</span><span class="op">=</span><span class="str">https://api.blindpay.com/v1</span>
+
+<span class="cmt"># ─── Base de Datos ───────────────────────────────────────────</span>
+<span class="prop">DATABASE_URL</span><span class="op">=</span><span class="str">postgresql://user:pass@host:5432/hecho_en_oaxaca</span>
+
+<span class="cmt"># ─── Notificaciones ─────────────────────────────────────────</span>
+<span class="prop">TWILIO_SID</span><span class="op">=</span><span class="str">ACxxxxxxxxxxxx</span>
+<span class="prop">TWILIO_TOKEN</span><span class="op">=</span><span class="str">xxxxxxxxxxxxxxx</span>
+<span class="prop">TWILIO_WHATSAPP_FROM</span><span class="op">=</span><span class="str">whatsapp:+14155238886</span>
+
+<span class="cmt"># ─── App ────────────────────────────────────────────────────</span>
+<span class="prop">JWT_SECRET</span><span class="op">=</span><span class="str">super_secreto_256_bits_minimo</span>
+<span class="prop">PORT</span><span class="op">=</span><span class="num">3000</span></pre></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════
+     COSTOS Y ESCALABILIDAD
+═══════════════════════════════ -->
+<section>
+  <div class="container">
+    <div class="section-label"><span class="num">07</span> Costos y Escalabilidad</div>
+    <h2>Costo de Operación del MVP</h2>
+    <p class="subtitle">El stack está diseñado para ser extremadamente barato. Estimación para los primeros 100 productores.</p>
+
+    <div class="table-wrap" style="margin-bottom:32px">
+      <table class="comparison">
+        <thead>
+          <tr>
+            <th>Componente</th>
+            <th>Servicio Recomendado</th>
+            <th>Plan Inicial</th>
+            <th>Costo estimado</th>
+            <th>Escala a</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Backend API</td>
+            <td>Railway.app / Render.com</td>
+            <td>Hobby Plan</td>
+            <td><span class="badge bg-green">$0–$5 USD/mes</span></td>
+            <td>Fly.io (multi-región)</td>
+          </tr>
+          <tr>
+            <td>Base de Datos</td>
+            <td>Supabase PostgreSQL</td>
+            <td>Free Tier (500 MB)</td>
+            <td><span class="badge bg-green">$0 USD/mes</span></td>
+            <td>$25/mes hasta 8 GB</td>
+          </tr>
+          <tr>
+            <td>Frontend PWA</td>
+            <td>Vercel / Cloudflare Pages</td>
+            <td>Free</td>
+            <td><span class="badge bg-green">$0 USD/mes</span></td>
+            <td>Pro $20/mes</td>
+          </tr>
+          <tr>
+            <td>Txs Stellar</td>
+            <td>Stellar Network (XLM)</td>
+            <td>~0.00001 XLM/tx</td>
+            <td><span class="badge bg-green">&lt;$0.01 USD/tx</span></td>
+            <td>Sin límite</td>
+          </tr>
+          <tr>
+            <td>Off-ramp SPEI</td>
+            <td>AlfredPay / BlindPay</td>
+            <td>~0.8% por retiro</td>
+            <td><span class="badge bg-orange">Variable</span></td>
+            <td>Negociable a &gt;$10K/mes</td>
+          </tr>
+          <tr>
+            <td>SMS/WhatsApp</td>
+            <td>Twilio</td>
+            <td>Pay as you go</td>
+            <td><span class="badge bg-blue">~$0.05 USD/msg</span></td>
+            <td>Volumen: $0.02/msg</td>
+          </tr>
+          <tr>
+            <td>KYC Básico</td>
+            <td>Manual (CURP + selfie)</td>
+            <td>Manual MVP</td>
+            <td><span class="badge bg-green">$0 USD/mes</span></td>
+            <td>Metamap $1/verificación</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon bg-green">🚀</div>
+        <h3>Hoja de Ruta v1.0</h3>
+        <p>Testnet + 10 productores piloto en Putla. Validar flujo end-to-end con datos reales. KYC manual vía WhatsApp con el equipo.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon bg-orange">📈</div>
+        <h3>Hoja de Ruta v1.5</h3>
+        <p>Mainnet. 50 productores. KYC automatizado (CURP + INE foto). Notificaciones automáticas. Dashboard de co-operativa/comunidad.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon bg-blue">🌐</div>
+        <h3>Hoja de Ruta v2.0</h3>
+        <p>Modelo multi-comunidad. Replicar en otras regiones (Sierra Norte, Cañada). API abierta para integradores. Tarjeta física de débito MXNe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════
+     FOOTER
+═══════════════════════════════ -->
+<footer>
+  <div class="container">
+    <p style="font-size:20px; margin-bottom:8px">🌽</p>
+    <p><strong>Hecho en Oaxaca</strong> — Infraestructura Financiera para Productores Rurales</p>
+    <p style="margin-top:6px">Stellar · MXNe · Etherfuse · BlindPay · AlfredPay · SPEI</p>
+    <p style="margin-top:8px; font-size:12px">MVP Blueprint — Arquitectura técnica v0.1 · 2025</p>
+  </div>
+</footer>
+
+</body>
+</html>

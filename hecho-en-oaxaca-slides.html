@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hecho en Oaxaca — Diapositivas TechRebel</title>
+<style>
+  :root {
+    --bg:#050e05;--panel:#0c1a0c;--panel2:#112011;--border:#1e3a1e;
+    --accent:#4ade80;--accent2:#22c55e;--gold:#fbbf24;--blue:#38bdf8;
+    --purple:#a78bfa;--red:#f87171;--orange:#fb923c;--teal:#2dd4bf;
+    --text:#e8f5e9;--muted:#6b8f71;--muted2:#a3c4a8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:clamp(15px,1.6vw,20px)}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden;height:100vh;user-select:none;font-size:1rem}
+
+  /* PROGRESS */
+  #progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width .4s ease;z-index:999}
+
+  /* LOGO */
+  #logo{position:fixed;top:14px;left:22px;z-index:998;display:flex;align-items:center;gap:8px}
+  #logo .lt{font-size:clamp(12px,1.1vw,16px);font-weight:900;letter-spacing:.12em;color:var(--accent)}
+  #logo .ls{font-size:clamp(13px,1.2vw,16px);color:var(--muted2);letter-spacing:.06em}
+
+  /* SLIDE NUM */
+  #snum{position:fixed;top:14px;right:22px;font-size:clamp(14px,1.3vw,17px);color:var(--muted);font-weight:700;letter-spacing:.1em;z-index:998}
+
+  /* KBD */
+  #kbdhint{position:fixed;bottom:68px;right:22px;font-size:15px;color:var(--muted);z-index:998;display:flex;gap:5px;align-items:center}
+  .kbd{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:14px}
+
+  /* NAV */
+  #nav{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:rgba(12,26,12,.95);border:1px solid var(--border);border-radius:999px;padding:9px 18px;z-index:998;backdrop-filter:blur(10px)}
+  .nbtn{background:none;border:1px solid var(--border);color:var(--muted2);border-radius:7px;padding:6px 18px;cursor:pointer;font-size:clamp(15px,1.4vw,18px);font-weight:600;transition:all .2s}
+  .nbtn:hover{border-color:var(--accent);color:var(--accent)}
+  .nbtn:disabled{opacity:.3;cursor:default}
+  #dots{display:flex;gap:5px;align-items:center}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .3s;cursor:pointer}
+  .dot.on{background:var(--accent);width:18px;border-radius:3px}
+  #ctr{font-size:clamp(14px,1.3vw,17px);color:var(--muted);font-weight:700;min-width:50px;text-align:center;letter-spacing:.05em}
+
+  /* DECK */
+  .deck{width:100vw;height:100vh;position:relative;overflow:hidden}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;padding:clamp(32px,4vh,56px) clamp(40px,5vw,72px) clamp(72px,9vh,96px);opacity:0;transform:translateX(60px);transition:opacity .4s,transform .4s;pointer-events:none}
+  .slide.on{opacity:1;transform:translateX(0);pointer-events:all}
+  .slide.out{opacity:0;transform:translateX(-60px)}
+
+  /* BG VARIANTS */
+  .bg1{background:radial-gradient(ellipse 800px 500px at 15% 10%,rgba(74,222,128,.05) 0%,transparent 65%),radial-gradient(ellipse 600px 400px at 85% 85%,rgba(167,139,250,.05) 0%,transparent 65%),var(--bg)}
+  .bg2{background:radial-gradient(ellipse 700px 500px at 80% 15%,rgba(251,191,36,.05) 0%,transparent 65%),radial-gradient(ellipse 500px 400px at 10% 80%,rgba(45,212,191,.04) 0%,transparent 65%),var(--bg)}
+  .bg3{background:radial-gradient(ellipse 600px 600px at 50% 50%,rgba(248,113,113,.04) 0%,transparent 65%),var(--bg)}
+
+  /* TYPOGRAPHY */
+  .lbl{display:inline-flex;align-items:center;gap:7px;font-size:clamp(14px,1.3vw,17px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  .lbl span{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);border-radius:5px;padding:2px 10px}
+  h1{font-size:clamp(38px,6vw,78px);font-weight:900;letter-spacing:-.04em;line-height:1;margin-bottom:14px}
+  h2{font-size:clamp(28px,4vw,52px);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:10px}
+  h3{font-size:clamp(15px,1.4vw,19px);font-weight:700;margin-bottom:6px}
+  .sub{font-size:clamp(15px,1.8vw,20px);color:var(--muted2);line-height:1.55;max-width:780px;margin-bottom:20px}
+  .hl{color:var(--accent)}
+  .hl-gold{color:var(--gold)}
+  .hl-blue{color:var(--blue)}
+  .hl-orange{color:var(--orange)}
+
+  /* GRID */
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  .g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px}
+  .g60{display:grid;grid-template-columns:1.5fr 1fr;gap:22px}
+  .g40{display:grid;grid-template-columns:1fr 1.5fr;gap:22px}
+
+  /* CARD */
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px;height:100%}
+  .card.ca{border-color:rgba(74,222,128,.35)}
+  .card.cg{border-color:rgba(251,191,36,.35)}
+  .card.cb{border-color:rgba(56,189,248,.35)}
+  .card.cp{border-color:rgba(167,139,250,.35)}
+  .card.co{border-color:rgba(251,146,60,.35)}
+  .card.ct{border-color:rgba(45,212,191,.35)}
+
+  .ico{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px;flex-shrink:0}
+  .ico.sm{width:34px;height:34px;font-size:16px;border-radius:8px}
+  .ia{background:rgba(74,222,128,.12)}
+  .ig{background:rgba(251,191,36,.12)}
+  .ib{background:rgba(56,189,248,.12)}
+  .ip{background:rgba(167,139,250,.12)}
+  .io{background:rgba(251,146,60,.12)}
+  .it{background:rgba(45,212,191,.12)}
+
+  /* BADGE */
+  .bdg{display:inline-flex;align-items:center;gap:4px;font-size:clamp(10px,0.95vw,13px);font-weight:700;padding:4px 12px;border-radius:999px;letter-spacing:.06em}
+  .ba{background:rgba(74,222,128,.15);color:var(--accent);border:1px solid rgba(74,222,128,.25)}
+  .bg_{background:rgba(251,191,36,.15);color:var(--gold);border:1px solid rgba(251,191,36,.25)}
+  .bb{background:rgba(56,189,248,.15);color:var(--blue);border:1px solid rgba(56,189,248,.25)}
+  .bp{background:rgba(167,139,250,.15);color:var(--purple);border:1px solid rgba(167,139,250,.25)}
+  .bo{background:rgba(251,146,60,.15);color:var(--orange);border:1px solid rgba(251,146,60,.25)}
+  .bt{background:rgba(45,212,191,.15);color:var(--teal);border:1px solid rgba(45,212,191,.25)}
+  .br{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+
+  /* STAT */
+  .stat{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px 14px;text-align:center}
+  .sv{font-size:clamp(28px,3.5vw,46px);font-weight:900;letter-spacing:-.03em;color:var(--accent)}
+  .sl{font-size:clamp(14px,1.3vw,17px);color:var(--muted2);margin-top:6px;line-height:1.4}
+
+  /* ROW ITEM */
+  .row{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:8px}
+  .row:last-child{margin-bottom:0}
+  .row-ico{font-size:clamp(18px,1.8vw,24px);flex-shrink:0;width:30px;text-align:center}
+  .row-body{flex:1}
+  .row-title{font-weight:700;font-size:clamp(13px,1.3vw,17px);margin-bottom:3px}
+  .row-desc{font-size:clamp(15px,1.4vw,18px);color:var(--muted2);line-height:1.5}
+
+  /* FLOW */
+  .flow-h{display:flex;gap:0;align-items:flex-start}
+  .fi{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;padding:0 6px}
+  .fi:not(:last-child)::after{content:'→';position:absolute;right:-12px;top:18px;font-size:16px;color:var(--muted)}
+  .fc{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid;margin-bottom:8px}
+  .ft{font-size:clamp(15px,1.4vw,18px);font-weight:700;margin-bottom:3px}
+  .fd{font-size:clamp(14px,1.3vw,17px);color:var(--muted2);line-height:1.4}
+
+  /* DIV */
+  .div{height:1px;background:var(--border);margin:14px 0}
+
+  /* TABLE */
+  .tw{background:var(--panel);border:1px solid var(--border);border-radius:11px;overflow:hidden}
+  table{width:100%;border-collapse:collapse;font-size:clamp(13px,1.2vw,16px)}
+  th{padding:9px 14px;text-align:left;font-size:clamp(13px,1.2vw,16px);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);background:rgba(255,255,255,.02)}
+  td{padding:9px 14px;border-bottom:1px solid rgba(30,58,30,.5);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+
+  /* CODE PILL */
+  .cp_{display:inline-flex;align-items:center;gap:5px;background:var(--panel2);border:1px solid var(--border);border-radius:7px;padding:4px 12px;font-family:'Consolas',monospace;font-size:clamp(14px,1.3vw,17px);color:var(--accent);margin:2px}
+
+  /* TASK BOX */
+  .tbox{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.28);border-radius:11px;padding:14px 18px;margin-bottom:10px}
+  .tbox:last-child{margin-bottom:0}
+  .tbox.ta{background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.28)}
+  .tbox.tb{background:rgba(56,189,248,.06);border-color:rgba(56,189,248,.28)}
+  .tbox.tp{background:rgba(167,139,250,.06);border-color:rgba(167,139,250,.28)}
+  .th_{display:flex;align-items:center;gap:8px;font-weight:700;font-size:clamp(13px,1.3vw,17px);color:var(--gold);margin-bottom:10px}
+  .tbox.ta .th_{color:var(--accent)}
+  .tbox.tb .th_{color:var(--blue)}
+  .tbox.tp .th_{color:var(--purple)}
+  .ti{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;font-size:clamp(15px,1.4vw,18px);color:var(--muted2)}
+  .ti:last-child{margin-bottom:0}
+  .tn{width:18px;height:18px;border-radius:50%;background:rgba(251,191,36,.2);border:1px solid rgba(251,191,36,.4);color:var(--gold);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .tbox.ta .tn{background:rgba(74,222,128,.2);border-color:rgba(74,222,128,.4);color:var(--accent)}
+  .tbox.tb .tn{background:rgba(56,189,248,.2);border-color:rgba(56,189,248,.4);color:var(--blue)}
+  .tbox.tp .tn{background:rgba(167,139,250,.2);border-color:rgba(167,139,250,.4);color:var(--purple)}
+
+  /* CODE BLOCK */
+  .cblock{background:#030d03;border:1px solid var(--border);border-radius:11px;overflow:hidden;font-family:'Cascadia Code','Consolas',monospace;font-size:clamp(12px,1.15vw,16px);line-height:1.7}
+  .ch{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;background:var(--panel);border-bottom:1px solid var(--border)}
+  .cht{font-size:clamp(14px,1.3vw,17px);font-weight:600;color:var(--muted2)}
+  .chl{font-size:clamp(13px,1.2vw,16px);font-weight:700;padding:2px 9px;border-radius:5px;background:rgba(74,222,128,.15);color:var(--accent);letter-spacing:.06em}
+  .cc{padding:16px 20px;overflow-x:auto}
+  .cc pre{white-space:pre}
+  .kw{color:#f97316}.fn{color:#c084fc}.str{color:#86efac}.num{color:#7dd3fc}
+  .cmt{color:#4b6350;font-style:italic}.cls{color:#fbbf24}.prop{color:#7dd3fc}
+  .op{color:#f97316}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="logo"><div><div class="lt">HECHO EN OAXACA</div><div class="ls">× TechRebel · Clase</div></div></div>
+<div id="snum">1 / 12</div>
+<div id="kbdhint"><span class="kbd">←</span><span class="kbd">→</span> navegar</div>
+
+<div id="nav">
+  <button class="nbtn" id="bp" onclick="go(-1)">← Ant</button>
+  <div id="dots"></div>
+  <span id="ctr">1 / 12</span>
+  <button class="nbtn" id="bn" onclick="go(1)">Sig →</button>
+</div>
+
+<div class="deck">
+
+<!-- ══ SLIDE 1 · PORTADA ══ -->
+<div class="slide on bg1">
+  <div style="display:flex;flex-direction:column;justify-content:center;height:100%">
+    <div class="lbl"><span>TechRebel · MVP Real</span> Infraestructura Financiera Rural</div>
+    <h1>Hecho en <span class="hl">Oaxaca</span><br><span style="color:var(--muted2);font-size:.6em">Pagos Globales para Productores Rurales</span></h1>
+    <p class="sub">Cómo Benito el maderero de Putla puede <strong style="color:var(--text)">cobrar desde Europa</strong>, <strong style="color:var(--text)">ahorrar con rendimientos</strong> y retirar efectivo en su OXXO más cercano, usando Stellar, MXNe y Etherfuse.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <span class="bdg ba">⭐ Stellar Network</span>
+      <span class="bdg bt">💱 MXNe · Stablebonds</span>
+      <span class="bdg bg_">🏦 Etherfuse</span>
+      <span class="bdg bb">🔄 BlindPay / AlfredPay</span>
+      <span class="bdg bo">🌽 Putla, Oaxaca</span>
+      <span class="bdg bp">☕ Café · Miel · Madera · Queso</span>
+    </div>
+  </div>
+  <div style="position:absolute;right:60px;bottom:90px;opacity:.04;font-size:280px;font-weight:900;color:var(--accent);pointer-events:none;line-height:1">🌽</div>
+</div>
+
+<!-- ══ SLIDE 2 · EL PROBLEMA ══ -->
+<div class="slide bg3">
+  <div class="lbl"><span>01</span> El Problema</div>
+  <h2>Productores con Producto, <span class="hl" style="color:var(--red)">sin Mercado Global</span></h2>
+  <p class="sub">Un cafetalero en Putla produce café de especialidad que vale $30 USD en Amsterdam. Pero no tiene forma de cobrar desde allá, ni de guardar lo que gana.</p>
+  <div class="g3" style="flex:1;align-items:start;">
+    <div class="card" style="border-color:rgba(248,113,113,.35)">
+      <div class="ico" style="background:rgba(248,113,113,.12)">🚫</div>
+      <h3 style="color:var(--red)">Sin Acceso a Pagos Globales</h3>
+      <p style="font-size:17px;color:var(--muted2);line-height:1.6">Sin cuenta bancaria internacional ni SWIFT, es imposible recibir USD o EUR. Los intermediarios cobran 8–15% de comisión.<br><br><strong style="color:var(--text)">El productor pierde entre 15 y 30% de su ingreso.</strong></p>
+    </div>
+    <div class="card" style="border-color:rgba(251,191,36,.35)">
+      <div class="ico ig">🏦</div>
+      <h3 style="color:var(--gold)">Exclusión Bancaria</h3>
+      <p style="font-size:17px;color:var(--muted2);line-height:1.6">Los bancos exigen comprobante de domicilio, historial crediticio y apertura presencial en ciudad. La mayoría de productores en la Sierra no califican.<br><br><strong style="color:var(--text)">+60% de zonas rurales con baja bancarización.</strong></p>
+    </div>
+    <div class="card" style="border-color:rgba(167,139,250,.35)">
+      <div class="ico ip">📉</div>
+      <h3 style="color:var(--purple)">Dinero Parado Sin Rendimiento</h3>
+      <p style="font-size:17px;color:var(--muted2);line-height:1.6">El efectivo guardado en casa pierde valor por inflación (5–6% anual MX). No hay acceso a instrumentos de ahorro como CETES sin una cuenta de inversión.<br><br><strong style="color:var(--text)">El productor no puede hacer crecer su dinero.</strong></p>
+    </div>
+  </div>
+  <div style="background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.25);border-radius:11px;padding:13px 18px;margin-top:14px;display:flex;align-items:center;gap:12px;">
+    <span style="font-size:20px">📊</span>
+    <span style="font-size:17px">Zonas con baja bancarización en México: <strong style="color:var(--red)">más de 1,500 municipios</strong>. El productor promedio pierde <strong style="color:var(--accent)">$3,000–$8,000 MXN anuales</strong> en comisiones e inflación.</span>
+  </div>
+</div>
+
+<!-- ══ SLIDE 3 · LA SOLUCIÓN ══ -->
+<div class="slide bg2">
+  <div class="lbl"><span>02</span> La Solución</div>
+  <h2>Una <span class="hl">Billetera Digital</span> que Habla en Pesos</h2>
+  <p class="sub">Hecho en Oaxaca conecta pagos globales, ahorro con rendimientos y retiro en efectivo, todo desde el celular del hijo del productor. Sin hablar de crypto, sin ir al banco.</p>
+  <div class="g60" style="flex:1;align-items:stretch;">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.25);border-radius:11px;padding:16px 18px;display:flex;gap:12px;">
+        <span style="font-size:22px;flex-shrink:0">💸</span>
+        <div><strong style="font-size:17px">Cobrar desde cualquier parte del mundo</strong>
+        <p style="font-size:16px;color:var(--muted2);margin-top:4px">El comprador en EU/Europa escanea un QR y paga. El dinero llega en segundos como MXNe (pesos digitales) a la billetera del productor.</p></div>
+      </div>
+      <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.25);border-radius:11px;padding:16px 18px;display:flex;gap:12px;">
+        <span style="font-size:22px;flex-shrink:0">📈</span>
+        <div><strong style="font-size:17px">Ahorrar con rendimientos de CETES (~9% APY)</strong>
+        <p style="font-size:16px;color:var(--muted2);margin-top:4px">Con un tap, el productor mueve sus MXNe a Stablebonds (CETES tokenizados de Etherfuse). Genera rendimientos diarios visibles en pesos.</p></div>
+      </div>
+      <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.25);border-radius:11px;padding:16px 18px;display:flex;gap:12px;">
+        <span style="font-size:22px;flex-shrink:0">💵</span>
+        <div><strong style="font-size:17px">Retirar en efectivo sin cuenta bancaria</strong>
+        <p style="font-size:16px;color:var(--muted2);margin-top:4px">AlfredPay genera un código de retiro OXXO. El productor o su familiar va al OXXO de Putla y cobra en efectivo en minutos.</p></div>
+      </div>
+      <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.25);border-radius:11px;padding:16px 18px;display:flex;gap:12px;">
+        <span style="font-size:22px;flex-shrink:0">📱</span>
+        <div><strong style="font-size:17px">Interfaz super simple, sin jerga crypto</strong>
+        <p style="font-size:16px;color:var(--muted2);margin-top:4px">El hijo del productor ve: "Tu saldo: $1,450 pesos". Nunca ve "MXNe", "Stellar" o "blockchain". Funciona en 2G.</p></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;justify-content:center;">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:50px;margin-bottom:12px">👨‍🌾</div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:8px">Benito Ramírez Cruz</div>
+        <div style="font-size:16px;color:var(--muted2);margin-bottom:14px">Maderero · Putla Villa de Guerrero, Oaxaca</div>
+        <div class="div"></div>
+        <div style="display:flex;justify-content:space-between;font-size:17px;margin-bottom:8px">
+          <span style="color:var(--muted2)">Saldo disponible</span>
+          <strong style="color:var(--accent)">$2,350 pesos</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:17px;margin-bottom:8px">
+          <span style="color:var(--muted2)">En ahorro (CETES)</span>
+          <strong style="color:var(--gold)">$8,100 pesos</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:17px;">
+          <span style="color:var(--muted2)">Ganado esta semana</span>
+          <strong style="color:var(--accent)">+$14.20 pesos</strong>
+        </div>
+        <div class="div"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
+          <div style="background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);border-radius:8px;padding:10px;font-size:16px;font-weight:700;color:var(--accent);text-align:center;">💳 Cobrar</div>
+          <div style="background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:10px;font-size:16px;font-weight:700;color:var(--gold);text-align:center;">💵 Retirar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 4 · STACK TÉCNICO ══ -->
+<div class="slide bg1">
+  <div class="lbl"><span>03</span> Pila Tecnológica</div>
+  <h2>El Stack que lo Hace <span class="hl">Posible</span></h2>
+  <p class="sub" style="margin-bottom:20px">Capas de la infraestructura: desde la app del productor hasta la blockchain de Stellar.</p>
+  <div style="display:flex;flex-direction:column;gap:5px;flex:1;justify-content:center;">
+    <div style="display:grid;grid-template-columns:1fr;gap:5px;">
+      <div style="background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.3);border-radius:9px;padding:12px 18px;display:flex;align-items:center;gap:14px;">
+        <span style="font-size:22px">📱</span>
+        <div style="flex:1"><div style="font-weight:700;font-size:17px;color:var(--accent)">Frontend — PWA (React/Next.js)</div><div style="font-size:15px;color:var(--muted2)">Offline-first · Service Worker · IndexedDB · Funciona en 2G · Sin jerga crypto · Muestra todo en pesos MXN</div></div>
+        <span class="bdg bb">Capa UI</span>
+      </div>
+      <div style="text-align:center;color:var(--muted);font-size:18px">↕</div>
+      <div style="background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.3);border-radius:9px;padding:12px 18px;display:flex;align-items:center;gap:14px;">
+        <span style="font-size:22px">⚙️</span>
+        <div style="flex:1"><div style="font-weight:700;font-size:17px;color:var(--gold)">Backend — Node.js (Express) o Python (FastAPI)</div><div style="font-size:15px;color:var(--muted2)">API REST · JWT Auth · Rate limiting · Webhooks de pagos · Notificaciones WhatsApp/SMS vía Twilio</div></div>
+        <span class="bdg bg_">Business Logic</span>
+      </div>
+      <div style="text-align:center;color:var(--muted);font-size:18px">↕</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;">
+        <div style="background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.3);border-radius:9px;padding:12px 16px;text-align:center;">
+          <div style="font-size:20px;margin-bottom:5px">⭐</div>
+          <div style="font-weight:700;font-size:16px;color:var(--purple)">Stellar SDK</div>
+          <div style="font-size:14px;color:var(--muted2)">Horizon API · Keypairs · Trust lines · Pagos MXNe · ~5 seg finalidad</div>
+        </div>
+        <div style="background:rgba(45,212,191,.07);border:1px solid rgba(45,212,191,.3);border-radius:9px;padding:12px 16px;text-align:center;">
+          <div style="font-size:20px;margin-bottom:5px">🏦</div>
+          <div style="font-weight:700;font-size:16px;color:var(--teal)">Etherfuse API</div>
+          <div style="font-size:14px;color:var(--muted2)">MXNe mint/burn · Stablebonds CETES · Rendimientos diarios · SPEI anchor</div>
+        </div>
+        <div style="background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.3);border-radius:9px;padding:12px 16px;text-align:center;">
+          <div style="font-size:20px;margin-bottom:5px">🔄</div>
+          <div style="font-weight:700;font-size:16px;color:var(--blue)">AlfredPay / BlindPay</div>
+          <div style="font-size:14px;color:var(--muted2)">Off-ramp MXNe → SPEI · Retiro OXXO · API REST · Webhooks</div>
+        </div>
+      </div>
+      <div style="text-align:center;color:var(--muted);font-size:18px">↕</div>
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:12px 18px;display:flex;align-items:center;gap:14px;">
+        <span style="font-size:22px">💵</span>
+        <div style="flex:1"><div style="font-weight:700;font-size:17px;">Efectivo / SPEI → Productor en Putla</div><div style="font-size:15px;color:var(--muted2)">OXXO · Corresponsal bancario · SPEI a CLABE · Sin cuenta bancaria requerida (vía OXXO)</div></div>
+        <span class="bdg ba">Liquidación Final</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 5 · FLUJO DE FONDOS ══ -->
+<div class="slide bg2">
+  <div class="lbl"><span>04</span> Flujo de Fondos</div>
+  <h2>Del Pago en Euros al <span class="hl">Efectivo en Putla</span></h2>
+  <p class="sub" style="margin-bottom:20px">5 pasos desde que un cliente europeo paga hasta que Benito retira en su OXXO. Todo en menos de 10 minutos.</p>
+
+  <div style="display:flex;flex-direction:column;gap:10px;flex:1;justify-content:center;">
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;position:relative;">
+      <div style="background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:14px 12px;text-align:center;">
+        <div style="font-size:28px;margin-bottom:7px">🌍</div>
+        <div style="font-size:16px;font-weight:700;color:var(--blue);margin-bottom:4px">1. Cliente Paga</div>
+        <div style="font-size:14px;color:var(--muted2)">USD/EUR/USDC desde EU o Europa. Escanea QR o usa link de pago.</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--muted)">→</div>
+      <div style="background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.3);border-radius:10px;padding:14px 12px;text-align:center;">
+        <div style="font-size:28px;margin-bottom:7px">🏦</div>
+        <div style="font-size:16px;font-weight:700;color:var(--teal);margin-bottom:4px">2. Etherfuse Mina MXNe</div>
+        <div style="font-size:14px;color:var(--muted2)">Convierte divisas a MXNe en Stellar. Tipo de cambio real. &lt;5 segundos.</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--muted)">→</div>
+      <div style="background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3);border-radius:10px;padding:14px 12px;text-align:center;">
+        <div style="font-size:28px;margin-bottom:7px">👛</div>
+        <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:4px">3. MXNe al Productor</div>
+        <div style="font-size:14px;color:var(--muted2)">Backend detecta el pago vía Horizon SSE y acredita a la billetera de Benito.</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="flex:1"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-size:14px;padding:0 20px">
+        <span>↙</span><span style="font-size:14px;color:var(--muted)">Benito decide</span>
+      </div>
+      <div style="flex:1"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 40px 1fr;gap:8px;">
+      <div style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);border-radius:10px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <span style="font-size:22px">📈</span>
+          <span style="font-weight:700;font-size:17px;color:var(--gold)">Ruta A — Guardar en "Alcancía"</span>
+        </div>
+        <p style="font-size:16px;color:var(--muted2)">Etherfuse mueve MXNe a Stablebonds (CETES tokenizados). Genera ~9% APY diario. Benito ve en la app: <strong style="color:var(--text)">"Ganaste $14 pesos hoy"</strong>.</p>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted)">↔</div>
+      <div style="background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <span style="font-size:22px">💵</span>
+          <span style="font-weight:700;font-size:17px;color:var(--blue)">Ruta B — Sacar en Efectivo</span>
+        </div>
+        <p style="font-size:16px;color:var(--muted2)">Etherfuse quema MXNe → MXN. AlfredPay genera código OXXO o SPEI. Benito retira en el OXXO de Putla en <strong style="color:var(--text)">&lt;10 minutos</strong>.</p>
+      </div>
+    </div>
+    <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:10px;padding:11px 16px;text-align:center;font-size:17px;">
+      WhatsApp de Benito: <strong style="color:var(--accent)">"¡Recibiste $1,200 pesos de Peter (Alemania)! Ya están en tu cuenta. 💰"</strong>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 6 · BASE DE DATOS ══ -->
+<div class="slide bg1">
+  <div class="lbl"><span>05</span> Base de Datos</div>
+  <h2>Esquema <span class="hl">Mínimo y Escalable</span></h2>
+  <p class="sub" style="margin-bottom:18px">PostgreSQL / Supabase. 6 tablas para el MVP completo.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex:1;align-items:start;">
+
+    <div style="background:var(--panel);border:1px solid rgba(251,191,36,.3);border-radius:11px;overflow:hidden;">
+      <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;font-weight:700;font-size:17px;"><span>👨‍🌾</span> productores <span class="bdg bo" style="margin-left:auto;font-size:13px">Core</span></div>
+      <div style="font-size:15px;padding:4px 0;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="color:var(--gold);font-family:monospace">id</span><span style="color:var(--muted2)">UUID PK</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">nombre</span><span style="color:var(--muted2)">VARCHAR</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">telefono</span><span style="color:var(--muted2)">VARCHAR único</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">municipio</span><span style="color:var(--muted2)">VARCHAR</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">stellar_addr</span><span style="color:var(--muted2)">VARCHAR G...</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">clabe</span><span style="color:var(--muted2)">VARCHAR off-ramp</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px"><span style="font-family:monospace">kyc_nivel</span><span style="color:var(--muted2)">TINYINT 0–2</span></div>
+      </div>
+    </div>
+
+    <div style="background:var(--panel);border:1px solid rgba(45,212,191,.3);border-radius:11px;overflow:hidden;">
+      <div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;font-weight:700;font-size:17px;"><span>🧀</span> productos <span class="bdg bt" style="margin-left:auto;font-size:13px">Catálogo</span></div>
+      <div style="font-size:15px;padding:4px 0;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="color:var(--gold);font-family:monospace">id</span><span style="color:var(--muted2)">UUID PK</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="color:var(--blue);font-family:monospace">productor_id</span><span style="color:var(--muted2)">UUID FK</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">categoria</span><span style="color:var(--muted2)">ENUM</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">nombre</span><span style="color:var(--muted2)">VARCHAR</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">precio_mxne</span><span style="color:var(--muted2)">DECIMAL(14,4)</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">unidad</span><span style="color:var(--muted2)">kg·litro·pieza</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;padding:7px 14px"><span style="font-family:monospace">activo</span><span style="color:var(--muted2)">BOOLEAN</span></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:var(--panel);border:1px solid rgba(56,189,248,.3);border-radius:11px;overflow:hidden;">
+        <div style="padding:11px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;font-weight:700;font-size:16px;"><span>💸</span> pagos <span class="bdg bb" style="margin-left:auto;font-size:13px">Transacciones</span></div>
+        <div style="font-size:15px;padding:2px 0;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;padding:6px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">tx_hash_stellar</span><span style="color:var(--muted2)">VARCHAR(70)</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;padding:6px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">monto_mxne</span><span style="color:var(--muted2)">DECIMAL(14,4)</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;padding:6px 14px"><span style="font-family:monospace">estado</span><span style="color:var(--muted2)">pendiente/ok/error</span></div>
+        </div>
+      </div>
+      <div style="background:var(--panel);border:1px solid rgba(74,222,128,.3);border-radius:11px;overflow:hidden;">
+        <div style="padding:11px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;font-weight:700;font-size:16px;"><span>📈</span> ahorros <span class="bdg ba" style="margin-left:auto;font-size:13px">Rendimientos</span></div>
+        <div style="font-size:15px;padding:2px 0;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;padding:6px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">tipo</span><span style="color:var(--muted2)">mxne|stablebond</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;padding:6px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">monto</span><span style="color:var(--muted2)">DECIMAL(14,4)</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;padding:6px 14px"><span style="font-family:monospace">rendimiento_acum</span><span style="color:var(--muted2)">DECIMAL(14,6)</span></div>
+        </div>
+      </div>
+      <div style="background:var(--panel);border:1px solid rgba(167,139,250,.3);border-radius:11px;overflow:hidden;">
+        <div style="padding:11px 14px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;font-weight:700;font-size:16px;"><span>🏧</span> retiros <span class="bdg bp" style="margin-left:auto;font-size:13px">Off-ramp</span></div>
+        <div style="font-size:15px;padding:2px 0;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;padding:6px 14px;border-bottom:1px solid rgba(30,58,30,.4)"><span style="font-family:monospace">metodo</span><span style="color:var(--muted2)">spei|oxxo</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;padding:6px 14px"><span style="font-family:monospace">proveedor</span><span style="color:var(--muted2)">alfredpay|blindpay</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ SLIDE 7 · CÓDIGO STELLAR ══ -->
+<div class="slide bg2">
+  <div class="lbl"><span>06</span> Código de Ejemplo</div>
+  <h2>Crear Billetera para <span class="hl">Benito el Maderero</span></h2>
+  <p class="sub" style="margin-bottom:18px">Snippet real en Node.js para registrar un nuevo productor en Stellar con trust line de MXNe.</p>
+  <div class="cblock" style="flex:1;overflow:hidden;">
+    <div class="ch"><span class="cht">registrarProductor.js — Node.js · @stellar/stellar-sdk</span><span class="chl">Node.js</span></div>
+    <div class="cc" style="height:calc(100% - 42px);overflow-y:auto;">
+<pre><span class="kw">const</span> StellarSdk <span class="op">=</span> <span class="fn">require</span>(<span class="str">'@stellar/stellar-sdk'</span>);
+<span class="kw">const</span> axios      <span class="op">=</span> <span class="fn">require</span>(<span class="str">'axios'</span>);
+
+<span class="kw">const</span> server <span class="op">=</span> <span class="kw">new</span> StellarSdk.<span class="cls">Horizon.Server</span>(<span class="str">'https://horizon-testnet.stellar.org'</span>);
+<span class="kw">const</span> NETWORK <span class="op">=</span> StellarSdk.Networks.<span class="prop">TESTNET</span>;
+<span class="kw">const</span> MXNe    <span class="op">=</span> <span class="kw">new</span> StellarSdk.<span class="cls">Asset</span>(<span class="str">'MXNe'</span>, process.env.<span class="prop">MXNE_ISSUER</span>);
+
+<span class="kw">async function</span> <span class="fn">registrarProductor</span>() {
+  <span class="cmt">// 1. Generar par de llaves criptográficas</span>
+  <span class="kw">const</span> keypair <span class="op">=</span> StellarSdk.<span class="cls">Keypair</span>.<span class="fn">random</span>();
+  console.<span class="fn">log</span>(<span class="str">'Llave pública:'</span>, keypair.<span class="fn">publicKey</span>());
+
+  <span class="cmt">// 2. Fondear en testnet (Friendbot, gratis)</span>
+  <span class="kw">await</span> axios.<span class="fn">get</span>(<span class="str">`https://friendbot.stellar.org?addr=${keypair.publicKey()}`</span>);
+
+  <span class="cmt">// 3. Establecer trust line para recibir MXNe</span>
+  <span class="kw">const</span> cuenta <span class="op">=</span> <span class="kw">await</span> server.<span class="fn">loadAccount</span>(keypair.<span class="fn">publicKey</span>());
+  <span class="kw">const</span> tx <span class="op">=</span> <span class="kw">new</span> StellarSdk.<span class="cls">TransactionBuilder</span>(cuenta, {
+    fee: <span class="kw">await</span> server.<span class="fn">fetchBaseFee</span>(),
+    networkPassphrase: NETWORK,
+  })
+  .<span class="fn">addOperation</span>(StellarSdk.Operation.<span class="fn">changeTrust</span>({
+    asset: MXNe, limit: <span class="str">'1000000'</span>  <span class="cmt">// máx 1 millón de pesos</span>
+  }))
+  .<span class="fn">addMemo</span>(StellarSdk.Memo.<span class="fn">text</span>(<span class="str">'HechoEnOaxaca-Madera'</span>))
+  .<span class="fn">setTimeout</span>(<span class="num">30</span>).<span class="fn">build</span>();
+
+  tx.<span class="fn">sign</span>(keypair);
+  <span class="kw">const</span> res <span class="op">=</span> <span class="kw">await</span> server.<span class="fn">submitTransaction</span>(tx);
+  console.<span class="fn">log</span>(<span class="str">'✅ Billetera lista! TX:'</span>, res.<span class="prop">hash</span>);
+
+  <span class="cmt">// ⚠️ NUNCA guardar secret en DB en texto plano.
+  // Cifrar con AES-256-GCM usando PIN del productor.</span>
+  <span class="kw">return</span> { publicKey: keypair.<span class="fn">publicKey</span>(), txHash: res.<span class="prop">hash</span> };
+}
+
+<span class="fn">registrarProductor</span>().<span class="fn">catch</span>(console.<span class="prop">error</span>);</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 8 · UX / INTERFAZ ══ -->
+<div class="slide bg1">
+  <div class="lbl"><span>07</span> Interfaz de Usuario</div>
+  <h2>Diseñada para el <span class="hl">Relevo Generacional</span></h2>
+  <p class="sub" style="margin-bottom:18px">El hijo de Benito usa la app. Benito solo mira el saldo. 5 pantallas son suficientes para el MVP.</p>
+  <div class="g2" style="flex:1;align-items:start;">
+    <div>
+      <div class="row"><span class="row-ico">🏠</span><div class="row-body"><div class="row-title">Pantalla 1 — "Mi Dinero"</div><div class="row-desc">Saldo total, saldo en alcancía, botón grande COBRAR y botón RETIRAR. Últimos 3 movimientos.</div></div><span class="bdg ba">P1</span></div>
+      <div class="row"><span class="row-ico">📲</span><div class="row-body"><div class="row-title">Pantalla 2 — "Pedir Pago"</div><div class="row-desc">QR compartible por WhatsApp + link de pago con monto en pesos. El hijo lo manda al comprador extranjero.</div></div><span class="bdg bb">P2</span></div>
+      <div class="row"><span class="row-ico">💳</span><div class="row-body"><div class="row-title">Pantalla 3 — "Sacar en Efectivo"</div><div class="row-desc">Ingresa monto → elige OXXO o banco → confirma con PIN → genera código de cobro OXXO o confirmación SPEI.</div></div><span class="bdg bo">P3</span></div>
+      <div class="row"><span class="row-ico">📊</span><div class="row-body"><div class="row-title">Pantalla 4 — "Mi Alcancía"</div><div class="row-desc">Gráfica simple. Cuánto gané esta semana. Cuánto tengo guardado. Botón para guardar más.</div></div><span class="bdg bt">P4</span></div>
+      <div class="row"><span class="row-ico">🛒</span><div class="row-body"><div class="row-title">Pantalla 5 — "Mis Productos"</div><div class="row-desc">Foto + nombre + precio + descripción. Genera link de pago por producto para compartir en redes.</div></div><span class="bdg bp">P5</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card ca">
+        <h3 style="font-size:17px;color:var(--accent);margin-bottom:10px">⚡ Requerimientos Críticos</h3>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:16px;color:var(--muted2);">
+          <div style="display:flex;gap:8px"><span style="color:var(--accent)">✓</span> <span><strong style="color:var(--text)">Offline-first:</strong> funciona en 2G. Colas de operaciones locales.</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--accent)">✓</span> <span><strong style="color:var(--text)">Solo pesos MXN:</strong> nunca mostrar MXNe, USDC o Stellar.</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--accent)">✓</span> <span><strong style="color:var(--text)">PIN de 4 dígitos + SMS OTP:</strong> sin contraseñas complicadas.</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--accent)">✓</span> <span><strong style="color:var(--text)">Fuentes grandes (mín 16px):</strong> botones de al menos 48×48px.</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--accent)">✓</span> <span><strong style="color:var(--text)">WhatsApp/SMS:</strong> notificación al recibir cada pago.</span></div>
+          <div style="display:flex;gap:8px"><span style="color:var(--accent)">✓</span> <span><strong style="color:var(--text)">Android 7+:</strong> compatible con celulares económicos del mercado.</span></div>
+        </div>
+      </div>
+      <div class="card cg">
+        <h3 style="font-size:17px;color:var(--gold);margin-bottom:10px">📨 Notificación ideal WhatsApp</h3>
+        <div style="background:var(--panel2);border-radius:10px;padding:13px 14px;font-size:16px;color:var(--text);line-height:1.6;font-style:italic;">
+          "¡Hola Benito! 🌽<br>Recibiste <strong>$1,200 pesos</strong> de Peter Müller (Alemania) por tu madera de Putla.<br>Ya los tienes en tu cuenta.<br><br>¿Qué quieres hacer?<br>💾 Guardar en alcancía<br>💵 Sacar en OXXO"
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 9 · MERCADO / TIMING ══ -->
+<div class="slide bg2">
+  <div class="lbl"><span>08</span> Mercado y Timing</div>
+  <h2>¿Por Qué <span class="hl">Ahora</span> es el Momento?</h2>
+  <p class="sub" style="margin-bottom:20px">Tres convergencias hacen posible este MVP hoy, con tecnología ya disponible en producción.</p>
+  <div class="g3" style="margin-bottom:16px;align-items:stretch;">
+    <div class="card" style="border-color:rgba(167,139,250,.35);">
+      <div class="ico ip">⭐</div>
+      <span class="bdg bp" style="margin-bottom:8px;display:inline-flex">Infraestructura lista</span>
+      <h3 style="color:var(--purple)">Stellar + Etherfuse en Mainnet</h3>
+      <p style="font-size:16px;color:var(--muted2);margin-top:6px;line-height:1.6">MXNe, Stablebonds y rampas SPEI están disponibles hoy. No es especulativo, es infraestructura probada en producción.</p>
+    </div>
+    <div class="card" style="border-color:rgba(251,191,36,.35);">
+      <div class="ico ig">📱</div>
+      <span class="bdg bg_" style="margin-bottom:8px;display:inline-flex">Adopción digital</span>
+      <h3 style="color:var(--gold)">Relevo Generacional en el Campo</h3>
+      <p style="font-size:16px;color:var(--muted2);margin-top:6px;line-height:1.6">Los hijos de los productores ya tienen smartphones y WhatsApp. Son el puente tecnológico para sus padres en la Sierra.</p>
+    </div>
+    <div class="card" style="border-color:rgba(74,222,128,.35);">
+      <div class="ico ia">🌍</div>
+      <span class="bdg ba" style="margin-bottom:8px;display:inline-flex">Demanda global</span>
+      <h3 style="color:var(--accent)">Boom de Productos Artesanales LATAM</h3>
+      <p style="font-size:16px;color:var(--muted2);margin-top:6px;line-height:1.6">Café de especialidad, miel orgánica, queso artesanal: alta demanda en EU/Europa con precios 5–10x vs mercado local.</p>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;">
+    <div class="stat"><div class="sv">&lt;$0.01</div><div class="sl">Costo por transacción en Stellar</div></div>
+    <div class="stat"><div class="sv">~5s</div><div class="sl">Confirmación de bloque en Stellar</div></div>
+    <div class="stat"><div class="sv">~9%</div><div class="sl">Rendimiento anual CETES tokenizados</div></div>
+    <div class="stat"><div class="sv">$0</div><div class="sl">Cuenta bancaria requerida para el productor</div></div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 10 · COSTOS ══ -->
+<div class="slide bg1">
+  <div class="lbl"><span>09</span> Costos de Operación</div>
+  <h2>Extremadamente <span class="hl">Barato de Operar</span></h2>
+  <p class="sub" style="margin-bottom:18px">Estimación para los primeros 100 productores. El stack es casi gratuito en fase MVP.</p>
+  <div class="g2" style="flex:1;align-items:start;gap:18px;">
+    <div>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Componente</th><th>Servicio</th><th>Costo MVP</th><th>Escala a</th></tr></thead>
+          <tbody>
+            <tr><td>Backend API</td><td>Railway.app</td><td><span class="bdg ba">$0–$5/mes</span></td><td>Fly.io</td></tr>
+            <tr><td>Base de Datos</td><td>Supabase Free</td><td><span class="bdg ba">$0/mes</span></td><td>$25/mes (8GB)</td></tr>
+            <tr><td>Frontend PWA</td><td>Vercel Free</td><td><span class="bdg ba">$0/mes</span></td><td>Pro $20/mes</td></tr>
+            <tr><td>Txs Stellar</td><td>Stellar Network</td><td><span class="bdg ba">&lt;$0.01/tx</span></td><td>Sin límite</td></tr>
+            <tr><td>Off-ramp SPEI</td><td>AlfredPay</td><td><span class="bdg bo">~0.8% variable</span></td><td>Negociable</td></tr>
+            <tr><td>SMS/WhatsApp</td><td>Twilio</td><td><span class="bdg bb">~$0.05/msg</span></td><td>$0.02 en volumen</td></tr>
+            <tr><td>KYC básico</td><td>Manual CURP</td><td><span class="bdg ba">$0/mes MVP</span></td><td>Metamap $1/verif</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card ca">
+        <h3 style="font-size:17px;color:var(--accent);margin-bottom:10px">🗺️ Hoja de Ruta</h3>
+        <div class="row" style="background:var(--panel2);margin-bottom:6px;border-radius:8px;">
+          <span class="row-ico">🚀</span>
+          <div class="row-body">
+            <div class="row-title" style="font-size:16px">v1.0 — Testnet · 10 productores piloto</div>
+            <div class="row-desc">Putla: flujo end-to-end, KYC manual por WhatsApp.</div>
+          </div>
+        </div>
+        <div class="row" style="background:var(--panel2);margin-bottom:6px;border-radius:8px;">
+          <span class="row-ico">📈</span>
+          <div class="row-body">
+            <div class="row-title" style="font-size:16px">v1.5 — Mainnet · 50 productores</div>
+            <div class="row-desc">KYC automatizado (CURP + INE foto). Notificaciones. Dashboard comunidad.</div>
+          </div>
+        </div>
+        <div class="row" style="background:var(--panel2);border-radius:8px;">
+          <span class="row-ico">🌐</span>
+          <div class="row-body">
+            <div class="row-title" style="font-size:16px">v2.0 — Multi-comunidad LATAM</div>
+            <div class="row-desc">Sierra Norte, Cañada, Istmo. API abierta. Tarjeta débito MXNe.</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.25);border-radius:10px;padding:13px 16px;font-size:16px;color:var(--muted2);">
+        <strong style="color:var(--accent)">Ventaja clave:</strong> El stack es <em>no-custodial</em>. La plataforma nunca toca el dinero de los productores. Costo operativo crece sub-lineal al escalar.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 11 · TAREA TECHREBEL ══ -->
+<div class="slide bg1">
+  <div class="lbl"><span>10</span> Aplicación Práctica — TechRebel</div>
+  <h2>Tu Turno: Aplica esto a <span class="hl">TechRebel</span></h2>
+  <p class="sub" style="margin-bottom:18px">Usa "Hecho en Oaxaca" como plantilla. Identifica los equivalentes en la plataforma TechRebel y diseña la infraestructura.</p>
+  <div class="g2" style="flex:1;align-items:start;gap:14px;">
+    <div>
+      <div class="tbox">
+        <div class="th_">🎯 Tarea 1 — Identifica a tus productores</div>
+        <div class="ti"><span class="tn">1</span><span>¿Quién es el equivalente al "productor de madera" en TechRebel? ¿Artesanal, creador digital, agricultor?</span></div>
+        <div class="ti"><span class="tn">2</span><span>¿Desde dónde pagan sus clientes? ¿Nacional o internacional? ¿En qué divisa?</span></div>
+        <div class="ti"><span class="tn">3</span><span>¿Tienen smartphone? ¿Acceso a internet estable? ¿Necesitas modo offline?</span></div>
+      </div>
+      <div class="tbox ta">
+        <div class="th_">⭐ Tarea 2 — Diseña el flujo de fondos</div>
+        <div class="ti"><span class="tn">1</span><span>Dibuja el flujo: Cliente paga → ramp → Stellar → billetera → ahorro o retiro</span></div>
+        <div class="ti"><span class="tn">2</span><span>¿Qué activo usas? ¿MXNe, USDC, otro Stellar asset? Justifica.</span></div>
+        <div class="ti"><span class="tn">3</span><span>¿Qué anchor/ramp de Stellar usarías para on/off-boarding de fiat en tu mercado?</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="tbox tb">
+        <div class="th_">🖥️ Tarea 3 — Define las 5 pantallas</div>
+        <div class="ti"><span class="tn">1</span><span>Lista las 5 pantallas mínimas para tu PWA. ¿Qué ve el usuario en cada una?</span></div>
+        <div class="ti"><span class="tn">2</span><span>¿Qué lenguaje usas? ¿Cómo ocultas la complejidad de tokens? (Ej: "créditos" en vez de "USDC")</span></div>
+        <div class="ti"><span class="tn">3</span><span>¿Cómo manejas notificaciones? ¿WhatsApp, SMS, push notification?</span></div>
+      </div>
+      <div class="tbox tp">
+        <div class="th_">🗄️ Tarea 4 — Diseña el Schema</div>
+        <div class="ti"><span class="tn">1</span><span>Adapta las 6 tablas del MVP a TechRebel. ¿Qué campos cambian? ¿Cuáles eliminas?</span></div>
+        <div class="ti"><span class="tn">2</span><span>¿Qué campo contiene la <code style="background:var(--panel2);padding:1px 5px;border-radius:4px;font-size:15px">stellar_address</code> del usuario? ¿Cómo proteges la llave secreta?</span></div>
+        <div class="ti"><span class="tn">3</span><span>Escribe el snippet de Node.js para crear la billetera del primer usuario de TechRebel.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 12 · CIERRE ══ -->
+<div class="slide bg1">
+  <div style="display:flex;flex-direction:column;justify-content:center;height:100%">
+    <div class="lbl"><span>Cierre</span> Lo que aprendiste hoy</div>
+    <h2 style="max-width:650px;margin-bottom:20px">3 Ideas para <span class="hl">Llevarte a Clase</span></h2>
+    <div class="g3" style="margin-bottom:20px;">
+      <div style="background:var(--panel);border:1px solid rgba(74,222,128,.3);border-radius:12px;padding:18px;">
+        <div style="font-size:28px;margin-bottom:8px">🔑</div>
+        <div style="font-weight:700;font-size:17px;color:var(--accent);margin-bottom:6px">Blockchain = Infraestructura, no especulación</div>
+        <div style="font-size:16px;color:var(--muted2);">Stellar resuelve el problema de pagos globales baratos (&lt;$0.01) y rápidos (~5s) para quien no tiene banco.</div>
+      </div>
+      <div style="background:var(--panel);border:1px solid rgba(251,191,36,.3);border-radius:12px;padding:18px;">
+        <div style="font-size:28px;margin-bottom:8px">🧱</div>
+        <div style="font-weight:700;font-size:17px;color:var(--gold);margin-bottom:6px">Compón Infraestructura Existente</div>
+        <div style="font-size:16px;color:var(--muted2);">Etherfuse, AlfredPay, Stellar SDK. No reinventes la rueda. Tu valor está en <em>orquestar</em>, no en construir la blockchain.</div>
+      </div>
+      <div style="background:var(--panel);border:1px solid rgba(56,189,248,.3);border-radius:12px;padding:18px;">
+        <div style="font-size:28px;margin-bottom:8px">🌱</div>
+        <div style="font-weight:700;font-size:17px;color:var(--blue);margin-bottom:6px">El UX oculta la complejidad</div>
+        <div style="font-size:16px;color:var(--muted2);">Benito no sabe qué es MXNe. Solo ve pesos. Un buen producto de finanzas descentralizadas <em>no parece</em> descentralizado.</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:11px;padding:14px 18px;">
+        <div style="font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Stack completo del MVP</div>
+        <div style="display:flex;flex-wrap:wrap;">
+          <span class="cp_">Stellar SDK</span><span class="cp_">Etherfuse</span><span class="cp_">MXNe</span><span class="cp_">Stablebonds</span><span class="cp_">AlfredPay</span><span class="cp_">BlindPay</span><span class="cp_">Next.js PWA</span><span class="cp_">Supabase</span><span class="cp_">Twilio</span>
+        </div>
+      </div>
+      <div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:11px;padding:14px 18px;">
+        <div style="font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Recursos para investigar</div>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:16px;color:var(--muted2);">
+          <div>⭐ developers.stellar.org — SDK & Horizon API</div>
+          <div>🏦 etherfuse.com — MXNe + Stablebonds SPEI</div>
+          <div>🔄 alfredpay.io — Off-ramp OXXO/SPEI México</div>
+          <div>📖 hecho-en-oaxaca.html — Documentación arquitectura</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<script>
+  const N = 12;
+  let cur = 0, busy = false;
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+
+  for (let i = 0; i < N; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' on' : '');
+    d.onclick = () => jump(i);
+    dotsEl.appendChild(d);
+  }
+
+  function ui() {
+    document.getElementById('progress').style.width = ((cur + 1) / N * 100) + '%';
+    document.getElementById('snum').textContent = (cur + 1) + ' / ' + N;
+    document.getElementById('ctr').textContent = (cur + 1) + ' / ' + N;
+    document.getElementById('bp').disabled = cur === 0;
+    document.getElementById('bn').disabled = cur === N - 1;
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i === cur));
+  }
+
+  function jump(idx) {
+    if (busy || idx === cur || idx < 0 || idx >= N) return;
+    busy = true;
+    const prev = cur; cur = idx;
+    slides[prev].classList.remove('on');
+    slides[prev].classList.add('out');
+    const dir = idx > prev;
+    slides[cur].style.transform = dir ? 'translateX(60px)' : 'translateX(-60px)';
+    slides[cur].style.opacity = '0';
+    void slides[cur].offsetWidth;
+    slides[cur].classList.add('on');
+    slides[cur].style.transform = '';
+    slides[cur].style.opacity = '';
+    setTimeout(() => { slides[prev].classList.remove('out'); busy = false; }, 450);
+    ui();
+  }
+
+  function go(d) { jump(cur + d); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+    if (e.key === 'Home') jump(0);
+    if (e.key === 'End') jump(N - 1);
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', e => tx = e.touches[0].clientX, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+  }, { passive: true });
+
+  ui();
+</script>
+</body>
+</html>

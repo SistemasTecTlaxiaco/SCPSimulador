@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hecho en Oaxaca — Infraestructura Financiera Rural | TechRebel</title>
+<style>
+  :root {
+    --bg: #050a14;
+    --panel: #0d1526;
+    --panel2: #111d35;
+    --border: #1e2d4a;
+    --accent: #00d4ff;
+    --accent2: #0099cc;
+    --gold: #f59e0b;
+    --green: #10b981;
+    --purple: #8b5cf6;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --muted2: #94a3b8;
+    --stellar: #7c3aed;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    user-select: none;
+  }
+
+  /* ─── DECK CONTAINER ─── */
+  .deck {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 48px 64px;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    pointer-events: none;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+  }
+  .slide.exit-left {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  /* ─── NAVIGATION ─── */
+  .nav {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(13,21,38,0.95);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 10px 20px;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .nav-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted2);
+    border-radius: 8px;
+    padding: 6px 18px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+  .nav-counter {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+    min-width: 60px;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .nav-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .dot.active { background: var(--accent); width: 20px; border-radius: 3px; }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--purple));
+    transition: width 0.4s ease;
+    z-index: 200;
+  }
+
+  /* ─── SLIDE NUMBER ─── */
+  .slide-num {
+    position: fixed;
+    top: 16px;
+    right: 24px;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    z-index: 100;
+  }
+
+  /* ─── LOGO ─── */
+  .slide-logo {
+    position: fixed;
+    top: 16px;
+    left: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 100;
+  }
+  .slide-logo .logo-text {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+  .slide-logo .logo-sub {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* ─── TYPOGRAPHY ─── */
+  .label {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .label .num {
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 6px;
+    padding: 1px 8px;
+  }
+
+  h1 {
+    font-size: clamp(36px, 5.5vw, 68px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1.0;
+    margin-bottom: 16px;
+  }
+  h2 {
+    font-size: clamp(26px, 3.5vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .sub {
+    font-size: clamp(14px, 1.8vw, 18px);
+    color: var(--muted2);
+    line-height: 1.5;
+    max-width: 700px;
+  }
+  .hl { color: var(--accent); }
+  .hl-gold { color: var(--gold); }
+  .hl-green { color: var(--green); }
+  .hl-purple { color: var(--purple); }
+
+  /* ─── LAYOUT UTILITIES ─── */
+  .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .cols-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .col-60-40 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; }
+  .col-40-60 { display: grid; grid-template-columns: 1fr 1.4fr; gap: 28px; }
+  .mt-auto { margin-top: auto; }
+  .mt-4 { margin-top: 16px; }
+  .mt-6 { margin-top: 24px; }
+  .mt-8 { margin-top: 32px; }
+  .flex-center { display: flex; align-items: center; justify-content: center; }
+  .flex-start { display: flex; align-items: flex-start; gap: 14px; }
+  .gap-3 { gap: 12px; }
+  .flex-col { flex-direction: column; }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    transition: border-color 0.2s;
+    height: 100%;
+  }
+  .card.accent-border { border-color: rgba(0,212,255,0.4); }
+  .card.gold-border { border-color: rgba(245,158,11,0.4); }
+  .card.green-border { border-color: rgba(16,185,129,0.35); }
+  .card.purple-border { border-color: rgba(139,92,246,0.4); }
+
+  .icon-box {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+  }
+  .icon-box.sm { width: 36px; height: 36px; font-size: 18px; border-radius: 9px; }
+
+  .bg-accent { background: rgba(0,212,255,0.12); }
+  .bg-gold { background: rgba(245,158,11,0.12); }
+  .bg-green { background: rgba(16,185,129,0.12); }
+  .bg-purple { background: rgba(139,92,246,0.12); }
+  .bg-red { background: rgba(239,68,68,0.12); }
+  .bg-stellar { background: rgba(124,58,237,0.12); }
+
+  /* ─── BADGE ─── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.07em;
+  }
+  .badge-accent { background: rgba(0,212,255,0.15); color: var(--accent); border: 1px solid rgba(0,212,255,0.25); }
+  .badge-gold { background: rgba(245,158,11,0.15); color: var(--gold); border: 1px solid rgba(245,158,11,0.25); }
+  .badge-green { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+  .badge-purple { background: rgba(139,92,246,0.15); color: var(--purple); border: 1px solid rgba(139,92,246,0.25); }
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+
+  /* ─── STAT BIG ─── */
+  .stat-big {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 16px;
+  }
+  .stat-val {
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .stat-label { font-size: 12px; color: var(--muted2); margin-top: 8px; line-height: 1.4; text-align: center; }
+
+  /* ─── FLOW STEPS ─── */
+  .flow { display: flex; gap: 0; align-items: stretch; }
+  .flow-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+  }
+  .flow-item:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -14px;
+    top: 22px;
+    font-size: 18px;
+    color: var(--muted);
+    z-index: 1;
+  }
+  .flow-circle {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    border: 2px solid;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+  }
+  .flow-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .flow-desc { font-size: 11px; color: var(--muted2); line-height: 1.4; }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  /* ─── TABLE ─── */
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+  }
+  .tbl td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(30,45,74,0.5);
+    vertical-align: middle;
+  }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl-wrap {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* ─── CHALLENGE BOX ─── */
+  .challenge {
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.25);
+    border-radius: 12px;
+    padding: 18px 22px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .solution {
+    background: rgba(16,185,129,0.06);
+    border: 1px solid rgba(16,185,129,0.25);
+    border-radius: 12px;
+    padding: 18px 22px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  /* ─── CODE PILL ─── */
+  .code-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-family: 'Cascadia Code', 'Consolas', monospace;
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  /* ─── TASK BOX ─── */
+  .task-box {
+    background: rgba(245,158,11,0.07);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 12px;
+    padding: 18px 22px;
+  }
+  .task-box .task-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .task-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--muted2);
+  }
+  .task-item:last-child { margin-bottom: 0; }
+  .task-num {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(245,158,11,0.2);
+    border: 1px solid rgba(245,158,11,0.4);
+    color: var(--gold);
+    font-size: 10px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ─── KEYFRAMES ─── */
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,212,255,0); }
+    50% { box-shadow: 0 0 28px 4px rgba(0,212,255,0.18); }
+  }
+  .glow { animation: pulse-glow 3s ease infinite; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* ─── SLIDE BG EFFECTS ─── */
+  .bg-gradient-1 {
+    background:
+      radial-gradient(ellipse 900px 500px at 20% 10%, rgba(0,212,255,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 400px at 80% 90%, rgba(139,92,246,0.06) 0%, transparent 60%),
+      var(--bg);
+  }
+  .bg-gradient-2 {
+    background:
+      radial-gradient(ellipse 700px 500px at 80% 20%, rgba(245,158,11,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 500px 400px at 10% 80%, rgba(16,185,129,0.05) 0%, transparent 60%),
+      var(--bg);
+  }
+  .bg-gradient-3 {
+    background:
+      radial-gradient(ellipse 600px 600px at 50% 50%, rgba(239,68,68,0.04) 0%, transparent 60%),
+      var(--bg);
+  }
+
+  /* ─── ESCROW VIZ ─── */
+  .escrow-node {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .escrow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 700;
+    gap: 4px;
+  }
+  .escrow-label {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* ─── KEYBOARD HINT ─── */
+  .kbd-hint {
+    position: fixed;
+    bottom: 72px;
+    right: 24px;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    z-index: 100;
+  }
+  .kbd {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 11px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── GLOBAL CHROME ──────────────────────────── -->
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="slide-logo">
+  <div>
+    <div class="logo-text">MERCATO</div>
+    <div class="logo-sub">× TechRebel</div>
+  </div>
+</div>
+
+<div class="slide-num" id="slideNum">1 / 12</div>
+
+<div class="kbd-hint">
+  <span class="kbd">←</span><span class="kbd">→</span> navegar
+</div>
+
+<!-- ─── NAV ──────────────────────────────────────── -->
+<div class="nav">
+  <button class="nav-btn" id="btnPrev" onclick="changeSlide(-1)">← Prev</button>
+  <div class="nav-dots" id="navDots"></div>
+  <span class="nav-counter" id="navCounter">1 / 12</span>
+  <button class="nav-btn" id="btnNext" onclick="changeSlide(1)">Next →</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     DECK
+════════════════════════════════════════════════ -->
+<div class="deck" id="deck">
+
+<!-- ─── SLIDE 1 · PORTADA ──────────────────────── -->
+<div class="slide active bg-gradient-1" data-index="0">
+  <div style="display:flex; flex-direction:column; justify-content:center; align-items:flex-start; height:100%;">
+    <div class="label">
+      <span class="num">TechRebel · Clase</span>
+      Infraestructura DeFi Real
+    </div>
+    <h1 style="max-width:800px">
+      Capital <span class="hl">Programable</span><br>
+      para PyMEs<br>
+      <span style="color:var(--muted2)">en LATAM</span>
+    </h1>
+    <p class="sub mt-4">
+      Cómo <strong style="color:var(--text)">MERCATO</strong> resuelve el problema de capital de trabajo
+      usando escrows no-custodiados en Stellar.
+      Aprende la arquitectura para aplicarla a <span class="hl">TechRebel</span>.
+    </p>
+    <div style="display:flex; gap:10px; margin-top:32px; flex-wrap:wrap;">
+      <span class="badge badge-accent">⭐ Stellar / Soroban</span>
+      <span class="badge badge-purple">🔒 Trustless Work</span>
+      <span class="badge badge-gold">💵 USDC Escrow</span>
+      <span class="badge badge-green">📦 Supply Chain Finance</span>
+      <span class="badge" style="background:rgba(99,102,241,0.15);color:#818cf8;border:1px solid rgba(99,102,241,0.25)">🌎 LATAM</span>
+    </div>
+  </div>
+  <div style="position:absolute; right:64px; bottom:100px; opacity:0.06; font-size:260px; font-weight:900; letter-spacing:-0.05em; color:var(--accent); pointer-events:none; line-height:1">M</div>
+</div>
+
+
+<!-- ─── SLIDE 2 · PROBLEMA ──────────────────────── -->
+<div class="slide bg-gradient-3" data-index="1">
+  <div class="label"><span class="num">01</span> El Problema</div>
+  <h2>La Paradoja del Capital de Trabajo</h2>
+  <p class="sub" style="margin-bottom:28px">Una PyME tiene una orden de compra confirmada…<br>pero <em>no tiene efectivo</em> para pagarle al proveedor y comenzar la producción.</p>
+
+  <div class="cols-3" style="flex:1; align-items:start;">
+    <div class="card" style="border-color:rgba(239,68,68,0.35)">
+      <div class="icon-box bg-red" style="font-size:24px">🚫</div>
+      <h3 style="color:var(--red)">Desconfianza Profunda</h3>
+      <p style="font-size:13px; color:var(--muted2); line-height:1.6">Los inversores no prestan porque no pueden controlar cómo se usan los fondos.<br><br>
+      <strong style="color:var(--text)">Riesgo real:</strong> la PyME usa el dinero para pagar deudas antiguas, no para producir.</p>
+    </div>
+    <div class="card" style="border-color:rgba(245,158,11,0.35)">
+      <div class="icon-box bg-gold" style="font-size:24px">⛓️</div>
+      <h3 style="color:var(--gold)">Proveedor Exige Pago Adelantado</h3>
+      <p style="font-size:13px; color:var(--muted2); line-height:1.6">Los proveedores raramente dan crédito. Exigen pago completo antes de entregar materiales.<br><br>
+      <strong style="color:var(--text)">Resultado:</strong> bloquea la producción antes de que comience.</p>
+    </div>
+    <div class="card" style="border-color:rgba(139,92,246,0.35)">
+      <div class="icon-box bg-stellar" style="font-size:24px">🏦</div>
+      <h3 style="color:var(--purple)">Exclusión Bancaria</h3>
+      <p style="font-size:13px; color:var(--muted2); line-height:1.6">Los bancos exigen garantías excesivas, historial crediticio formal y procesos de meses.<br><br>
+      <strong style="color:var(--text)">Estadística:</strong> +70% de PyMEs en LATAM sin acceso a financiamiento.</p>
+    </div>
+  </div>
+
+  <div style="background:rgba(239,68,68,0.07); border:1px solid rgba(239,68,68,0.25); border-radius:12px; padding:14px 20px; margin-top:20px; display:flex; align-items:center; gap:12px;">
+    <span style="font-size:22px">📊</span>
+    <span style="font-size:14px;">Brecha de financiamiento en LATAM: <strong style="color:var(--red)">más de US$90 mil millones</strong> anuales. Mercado global de Supply Chain Finance: <strong style="color:var(--accent)">más de US$2 billones</strong>.</span>
+  </div>
+</div>
+
+
+<!-- ─── SLIDE 3 · SOLUCIÓN ──────────────────────── -->
+<div class="slide bg-gradient-2" data-index="2">
+  <div class="label"><span class="num">02</span> La Solución</div>
+  <h2>Reemplazar Confianza con <span class="hl">Lógica Programable</span></h2>
+  <p class="sub" style="margin-bottom:28px">En lugar de transferir capital a la PyME, los fondos se bloquean en escrows inteligentes no-custodiados y se liberan <em>directamente al proveedor</em> por hitos verificados.</p>
+
+  <div class="col-60-40" style="flex:1; align-items:stretch;">
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div class="solution">
+        <span style="font-size:22px; flex-shrink:0">🔒</span>
+        <div>
+          <strong style="font-size:14px">Escrow No-Custodiado (Trustless Work)</strong>
+          <p style="font-size:13px; color:var(--muted2); margin-top:4px">El capital nunca pasa por las manos de la PyME. Está bloqueado en un smart contract en Soroban/Stellar hasta que se cumplen las condiciones acordadas.</p>
+        </div>
+      </div>
+      <div class="solution">
+        <span style="font-size:22px; flex-shrink:0">⚙️</span>
+        <div>
+          <strong style="font-size:14px">MERCATO como Orquestador</strong>
+          <p style="font-size:13px; color:var(--muted2); margin-top:4px">MERCATO define la lógica del deal (hitos, roles, montos). Trustless Work ejecuta el contrato. División clara de responsabilidades.</p>
+        </div>
+      </div>
+      <div class="solution">
+        <span style="font-size:22px; flex-shrink:0">🔄</span>
+        <div>
+          <strong style="font-size:14px">Ciclo Dual de Escrow</strong>
+          <p style="font-size:13px; color:var(--muted2); margin-top:4px">1) Despliegue de capital al proveedor (multi-release). 2) Pago de deuda al inversor (single-release). Dos ciclos coordinados, completamente on-chain.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; justify-content:center;">
+      <div style="background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:24px 20px; text-align:center;">
+        <div style="font-size:40px; margin-bottom:10px">⚖️</div>
+        <div style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:14px">Antes vs Ahora</div>
+        <div style="display:flex; flex-direction:column; gap:8px; text-align:left;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+            <span style="color:var(--red)">✕</span>
+            <span style="color:var(--muted2)">Préstamo → PyME → Proveedor</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+            <span style="color:var(--red)">✕</span>
+            <span style="color:var(--muted2)">Sin control del destino del capital</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+            <span style="color:var(--red)">✕</span>
+            <span style="color:var(--muted2)">Cobranza manual post-incumplimiento</span>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+            <span style="color:var(--green)">✓</span>
+            <span style="color:var(--muted2)">Escrow → Proveedor (sin pasar por PyME)</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+            <span style="color:var(--green)">✓</span>
+            <span style="color:var(--muted2)">Control programable del flujo de fondos</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+            <span style="color:var(--green)">✓</span>
+            <span style="color:var(--muted2)">Micropagos estructurados automáticos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── SLIDE 4 · ARQUITECTURA ─────────────────── -->
+<div class="slide bg-gradient-1" data-index="3">
+  <div class="label"><span class="num">03</span> Arquitectura</div>
+  <h2>Stack Técnico de <span class="hl">MERCATO</span></h2>
+  <p class="sub" style="margin-bottom:24px">Capas de la infraestructura: desde el proveedor de liquidez hasta el pago en efectivo.</p>
+
+  <div style="display:flex; flex-direction:column; gap:6px; flex:1; justify-content:center;">
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:6px;">
+
+      <div style="background:rgba(0,212,255,0.07); border:1px solid rgba(0,212,255,0.25); border-radius:10px; padding:14px 16px; text-align:center;">
+        <div style="font-size:24px; margin-bottom:6px">🏢</div>
+        <div style="font-size:13px; font-weight:700; color:var(--accent)">PyME</div>
+        <div style="font-size:11px; color:var(--muted2)">Sube orden de compra, define hitos y proveedor</div>
+      </div>
+      <div style="background:rgba(245,158,11,0.07); border:1px solid rgba(245,158,11,0.25); border-radius:10px; padding:14px 16px; text-align:center;">
+        <div style="font-size:24px; margin-bottom:6px">💼</div>
+        <div style="font-size:13px; font-weight:700; color:var(--gold)">Inversor</div>
+        <div style="font-size:11px; color:var(--muted2)">Fondea el escrow en USDC. Recibe repago estructurado</div>
+      </div>
+      <div style="background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.25); border-radius:10px; padding:14px 16px; text-align:center;">
+        <div style="font-size:24px; margin-bottom:6px">🏭</div>
+        <div style="font-size:13px; font-weight:700; color:var(--green)">Proveedor</div>
+        <div style="font-size:11px; color:var(--muted2)">Recibe pago directo por hito. Sin riesgo de crédito</div>
+      </div>
+      <div style="background:rgba(139,92,246,0.07); border:1px solid rgba(139,92,246,0.25); border-radius:10px; padding:14px 16px; text-align:center;">
+        <div style="font-size:24px; margin-bottom:6px">🌐</div>
+        <div style="font-size:13px; font-weight:700; color:var(--purple)">MERCATO API</div>
+        <div style="font-size:11px; color:var(--muted2)">Orquesta la lógica del deal, roles y ciclos de escrow</div>
+      </div>
+    </div>
+
+    <div style="text-align:center; color:var(--muted); font-size:22px; padding:2px">↕</div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px;">
+      <div style="background:var(--panel); border:1px solid rgba(124,58,237,0.4); border-radius:10px; padding:14px 16px; text-align:center;">
+        <div style="font-size:20px; margin-bottom:6px">🔒</div>
+        <div style="font-size:12px; font-weight:700; color:var(--purple)">Trustless Work API</div>
+        <div style="font-size:11px; color:var(--muted2)">Contratos de escrow en Soroban. Multi-release + Single-release</div>
+      </div>
+      <div style="background:var(--panel); border:1px solid rgba(0,212,255,0.3); border-radius:10px; padding:14px 16px; text-align:center;">
+        <div style="font-size:20px; margin-bottom:6px">⭐</div>
+        <div style="font-size:12px; font-weight:700; color:var(--accent)">Stellar / Soroban</div>
+        <div style="font-size:11px; color:var(--muted2)">Red L1. Finalidad ~5 seg. &lt;$0.01 por tx. USDC nativo</div>
+      </div>
+      <div style="background:var(--panel); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:14px 16px; text-align:center;">
+        <div style="font-size:20px; margin-bottom:6px">🏦</div>
+        <div style="font-size:12px; font-weight:700; color:var(--green)">Etherfuse Anchor</div>
+        <div style="font-size:11px; color:var(--muted2)">Fiat → USDC vía SPEI. Off-ramp a cuentas bancarias MX</div>
+      </div>
+    </div>
+
+    <div style="text-align:center; color:var(--muted); font-size:22px; padding:2px">↕</div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+      <div style="background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:12px 16px; display:flex; align-items:center; gap:10px;">
+        <span style="font-size:18px">🔵</span>
+        <div>
+          <div style="font-size:12px; font-weight:700;">Rozo (Cross-chain)</div>
+          <div style="font-size:11px; color:var(--muted2)">USDC desde Base/EVM → Stellar</div>
+        </div>
+        <span class="badge badge-gold" style="margin-left:auto">Roadmap</span>
+      </div>
+      <div style="background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:12px 16px; display:flex; align-items:center; gap:10px;">
+        <span style="font-size:18px">🔄</span>
+        <div>
+          <div style="font-size:12px; font-weight:700;">Soroswap DEX</div>
+          <div style="font-size:11px; color:var(--muted2)">Liquidez y routing entre activos Stellar</div>
+        </div>
+        <span class="badge badge-gold" style="margin-left:auto">Roadmap</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── SLIDE 5 · FLUJO DE LA DEAL ───────────────── -->
+<div class="slide bg-gradient-2" data-index="4">
+  <div class="label"><span class="num">04</span> Flujo del Deal</div>
+  <h2>Del Pedido al <span class="hl-green">Pago Garantizado</span></h2>
+  <p class="sub" style="margin-bottom:28px">El flujo completo de un ciclo de financiamiento en MERCATO. 4 pasos, completamente on-chain.</p>
+
+  <div style="display:flex; flex-direction:column; gap:12px; flex:1; justify-content:center;">
+
+    <div style="display:grid; grid-template-columns:40px 1fr 1fr 1fr; gap:12px; align-items:start;">
+
+      <!-- Headers -->
+      <div></div>
+      <div style="text-align:center; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent); padding-bottom:4px;">DESPLIEGUE DE CAPITAL</div>
+      <div style="text-align:center; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); padding-bottom:4px; border-left:1px dashed var(--border)">PRODUCCIÓN</div>
+      <div style="text-align:center; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--green); padding-bottom:4px; border-left:1px dashed var(--border)">REPAGO</div>
+
+      <!-- Row: Inversor -->
+      <div style="font-size:11px; color:var(--muted); writing-mode:vertical-rl; transform:rotate(180deg); text-align:center; font-weight:700; display:flex; align-items:center; gap:4px;">
+        <span style="font-size:16px">💼</span>
+        <span>Inversor</span>
+      </div>
+      <div style="background:rgba(0,212,255,0.07); border:1px solid rgba(0,212,255,0.3); border-radius:10px; padding:12px 14px;">
+        <div style="font-size:12px; font-weight:700; margin-bottom:4px">1. Fondea Escrow Multi-Release</div>
+        <div style="font-size:11px; color:var(--muted2)">Deposita USDC. La llave nunca le pertenece a la PyME. KYC on-chain.</div>
+      </div>
+      <div style="border-left:1px dashed var(--border); padding-left:12px;">
+        <div style="background:rgba(0,212,255,0.04); border:1px solid rgba(0,212,255,0.15); border-radius:10px; padding:12px 14px; height:100%;">
+          <div style="font-size:12px; color:var(--muted2)">Fondos bloqueados en contrato. Monitoreo en tiempo real.</div>
+        </div>
+      </div>
+      <div style="border-left:1px dashed var(--border); padding-left:12px;">
+        <div style="background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:12px 14px;">
+          <div style="font-size:12px; font-weight:700; margin-bottom:4px">4. Recibe micropagos</div>
+          <div style="font-size:11px; color:var(--muted2)">Single-release escrow. Acumulación de pagos hasta saldo capital + fee.</div>
+        </div>
+      </div>
+
+      <!-- Row: PyME -->
+      <div style="font-size:11px; color:var(--muted); writing-mode:vertical-rl; transform:rotate(180deg); text-align:center; font-weight:700; display:flex; align-items:center; gap:4px;">
+        <span style="font-size:16px">🏢</span>
+        <span>PyME</span>
+      </div>
+      <div style="background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.25); border-radius:10px; padding:12px 14px;">
+        <div style="font-size:12px; font-weight:700; margin-bottom:4px">Estructura el deal</div>
+        <div style="font-size:11px; color:var(--muted2)">Sube OC, define hitos, asigna proveedor. <strong style="color:var(--red)">Nunca toca los fondos.</strong></div>
+      </div>
+      <div style="border-left:1px dashed var(--border); padding-left:12px;">
+        <div style="background:rgba(245,158,11,0.07); border:1px solid rgba(245,158,11,0.25); border-radius:10px; padding:12px 14px;">
+          <div style="font-size:12px; font-weight:700; margin-bottom:4px">3. Aprueba hitos</div>
+          <div style="font-size:11px; color:var(--muted2)">Verifica entrega de materiales. Firma la liberación al proveedor.</div>
+        </div>
+      </div>
+      <div style="border-left:1px dashed var(--border); padding-left:12px;">
+        <div style="background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.25); border-radius:10px; padding:12px 14px;">
+          <div style="font-size:12px; font-weight:700; margin-bottom:4px">Repaga al vender</div>
+          <div style="font-size:11px; color:var(--muted2)">Micropagos hacia el escrow de repago. Sin presión de cuota fija.</div>
+        </div>
+      </div>
+
+      <!-- Row: Proveedor -->
+      <div style="font-size:11px; color:var(--muted); writing-mode:vertical-rl; transform:rotate(180deg); text-align:center; font-weight:700; display:flex; align-items:center; gap:4px;">
+        <span style="font-size:16px">🏭</span>
+        <span>Proveedor</span>
+      </div>
+      <div style="background:rgba(16,185,129,0.03); border:1px dashed rgba(16,185,129,0.2); border-radius:10px; padding:12px 14px; display:flex; align-items:center; justify-content:center;">
+        <span style="font-size:11px; color:var(--muted)">Espera confirmación de fondeo</span>
+      </div>
+      <div style="border-left:1px dashed var(--border); padding-left:12px;">
+        <div style="background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.35); border-radius:10px; padding:12px 14px;">
+          <div style="font-size:12px; font-weight:700; margin-bottom:4px">2. Recibe pago garantizado</div>
+          <div style="font-size:11px; color:var(--muted2)">Escrow libera USDC por hito cumplido. Pago directo, on-chain.</div>
+        </div>
+      </div>
+      <div style="border-left:1px dashed var(--border); padding-left:12px;">
+        <div style="background:rgba(16,185,129,0.03); border:1px dashed rgba(16,185,129,0.2); border-radius:10px; padding:12px 14px; display:flex; align-items:center; justify-content:center;">
+          <span style="font-size:11px; color:var(--muted)">Ciclo completado ✓</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ─── SLIDE 6 · MODELO DE NEGOCIO ──────────────── -->
+<div class="slide bg-gradient-1" data-index="5">
+  <div class="label"><span class="num">05</span> Modelo de Negocio</div>
+  <h2>Monetizamos Ciclos Completados,<br><span class="hl">No Originación de Deuda</span></h2>
+  <p class="sub" style="margin-bottom:24px">Dos eventos de monetización por cada deal. Los ingresos escalan linealmente con el volumen.</p>
+
+  <div class="col-40-60" style="flex:1;">
+    <div style="display:flex; flex-direction:column; gap:14px;">
+
+      <div style="background:rgba(0,212,255,0.07); border:1px solid rgba(0,212,255,0.3); border-radius:12px; padding:20px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+          <span style="font-size:22px">1️⃣</span>
+          <strong style="font-size:14px; color:var(--accent)">Fee de liberación de capital</strong>
+        </div>
+        <p style="font-size:13px; color:var(--muted2)">Comisión cuando el escrow multi-release libera fondos al proveedor. Ligado a producción real.</p>
+      </div>
+
+      <div style="background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.3); border-radius:12px; padding:20px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+          <span style="font-size:22px">2️⃣</span>
+          <strong style="font-size:14px; color:var(--green)">Fee de liquidación de repago</strong>
+        </div>
+        <p style="font-size:13px; color:var(--muted2)">Comisión cuando la PyME completa el repago al inversor vía el escrow single-release.</p>
+      </div>
+
+      <div style="background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px; display:flex; gap:10px; align-items:flex-start;">
+        <span style="font-size:20px">💡</span>
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:4px">Revenue es on-chain verificable</div>
+          <div style="font-size:12px; color:var(--muted2)">Cada fee se captura al completar el escrow. Auditable en tiempo real por inversores e integradores.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <h3 style="color:var(--muted2); font-size:14px">Economía de Unidad (Proyección)</h3>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Volumen Anual</th>
+              <th>Fee ~2–3%</th>
+              <th>Revenue est.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>$1M USD</strong></td>
+              <td>2–3%</td>
+              <td><span style="color:var(--accent)">$20K–$30K</span></td>
+            </tr>
+            <tr>
+              <td><strong>$10M USD</strong></td>
+              <td>2–3%</td>
+              <td><span style="color:var(--accent)">$200K–$300K</span></td>
+            </tr>
+            <tr>
+              <td><strong>$100M USD</strong></td>
+              <td>2–3%</td>
+              <td><span style="color:var(--green)">$2M–$3M</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px;">
+        <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:10px;">Ventaja de Costo vs. Banca Tradicional</div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+            <span style="color:var(--red)">✕</span><span style="color:var(--muted2)">Underwriting manual</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+            <span style="color:var(--red)">✕</span><span style="color:var(--muted2)">Costos de clearing y cobranza</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+            <span style="color:var(--red)">✕</span><span style="color:var(--muted2)">Documentación legal por deal</span>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+            <span style="color:var(--green)">✓</span><span style="color:var(--muted2)">Cumplimiento embebido en escrow</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+            <span style="color:var(--green)">✓</span><span style="color:var(--muted2)">Tx en Stellar: &lt;$0.01 USD</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+            <span style="color:var(--green)">✓</span><span style="color:var(--muted2)">Costo por deal ↓ al escalar</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── SLIDE 7 · VENTAJA DIFERENCIAL ────────────── -->
+<div class="slide bg-gradient-1" data-index="6">
+  <div class="label"><span class="num">06</span> Moat / Ventaja</div>
+  <h2>¿Por qué es <span class="hl">Difícil de Copiar</span>?</h2>
+  <p class="sub" style="margin-bottom:28px">La ventaja competitiva de MERCATO no es solo tecnología. Es la <em>combinación</em> de reputación on-chain, infraestructura dual y red de cadena de suministro.</p>
+
+  <div class="cols-2" style="flex:1; align-items:stretch; gap:16px;">
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div class="card accent-border">
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div class="icon-box bg-accent sm">🏆</div>
+          <div>
+            <h3 style="font-size:14px; color:var(--accent)">Reputación Comercial On-Chain</h3>
+            <p style="font-size:13px; color:var(--muted2); margin-top:4px">Cada hito cumplido y cada repago construyen un historial inmutable. La PyME acumula <strong style="color:var(--text)">colateral reputacional programable</strong>.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card purple-border">
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div class="icon-box bg-stellar sm">🔗</div>
+          <div>
+            <h3 style="font-size:14px; color:var(--purple)">Arquitectura de Escrow Dual</h3>
+            <p style="font-size:13px; color:var(--muted2); margin-top:4px">El ciclo multi-release + single-release es operativamente complejo de replicar sin experiencia profunda en orquestación blockchain.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div class="card gold-border">
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div class="icon-box bg-gold sm">🕸️</div>
+          <div>
+            <h3 style="font-size:14px; color:var(--gold)">Densidad de Red en la Cadena</h3>
+            <p style="font-size:13px; color:var(--muted2); margin-top:4px">Más PyMEs y proveedores transactuando en la misma infraestructura → los inversores ganan visibilidad y confianza en ciclos repetibles.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card green-border">
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div class="icon-box bg-green sm">🔄</div>
+          <div>
+            <h3 style="font-size:14px; color:var(--green)">Costos de Cambio por Identidad Financiera</h3>
+            <p style="font-size:13px; color:var(--muted2); margin-top:4px">Una PyME con track record verificado en MERCATO accede a mejores tasas y fondeo más rápido. Salir significa perder ese historial.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:rgba(0,212,255,0.06); border:1px solid rgba(0,212,255,0.2); border-radius:12px; padding:14px 20px; margin-top:16px; text-align:center;">
+    <span style="font-size:14px; font-weight:700; color:var(--accent)">
+      "No es solo un marketplace. Es un sistema de control de capital programable donde la reputación se convierte en colateral."
+    </span>
+  </div>
+</div>
+
+
+<!-- ─── SLIDE 8 · TIMING / WHY NOW ───────────────── -->
+<div class="slide bg-gradient-2" data-index="7">
+  <div class="label"><span class="num">07</span> ¿Por Qué Ahora?</div>
+  <h2>La Convergencia Que Lo Hace <span class="hl">Posible Hoy</span></h2>
+  <p class="sub" style="margin-bottom:28px">Tres cambios estructurales simultáneos crean la ventana de oportunidad para MERCATO.</p>
+
+  <div class="cols-3" style="flex:1; align-items:stretch;">
+    <div class="card" style="border-color:rgba(124,58,237,0.4);">
+      <div class="icon-box bg-stellar" style="font-size:26px">⭐</div>
+      <div class="badge badge-purple" style="margin-bottom:10px">Infraestructura Lista</div>
+      <h3 style="color:var(--purple)">Soroban + Trustless Work</h3>
+      <p style="font-size:13px; color:var(--muted2); margin-top:8px; line-height:1.6">
+        Escrows no-custodiados, programables y de bajo costo están disponibles hoy en producción. MERCATO no construye desde cero, <strong style="color:var(--text)">orquesta infraestructura existente</strong>.
+      </p>
+      <div class="divider"></div>
+      <div style="font-size:12px; color:var(--muted2)">Finalidad: ~5 seg · Fee: &lt;$0.01 · Soroban en mainnet ✓</div>
+    </div>
+
+    <div class="card" style="border-color:rgba(245,158,11,0.4);">
+      <div class="icon-box bg-gold" style="font-size:26px">📈</div>
+      <div class="badge badge-gold" style="margin-bottom:10px">Demanda de Inversión</div>
+      <h3 style="color:var(--gold)">RWA → Rendimiento Real</h3>
+      <p style="font-size:13px; color:var(--muted2); margin-top:8px; line-height:1.6">
+        Los inversores buscan retornos reales, respaldados por activos productivos. La cadena de suministro ofrece flujos de caja predecibles y de corto plazo.
+      </p>
+      <div class="divider"></div>
+      <div style="font-size:12px; color:var(--muted2)">Real World Assets (RWA): sector de crecimiento acelerado en DeFi 2024–2026</div>
+    </div>
+
+    <div class="card" style="border-color:rgba(16,185,129,0.4);">
+      <div class="icon-box bg-green" style="font-size:26px">📋</div>
+      <div class="badge badge-green" style="margin-bottom:10px">Formalización Digital</div>
+      <h3 style="color:var(--green)">Facturación Electrónica LATAM</h3>
+      <p style="font-size:13px; color:var(--muted2); margin-top:8px; line-height:1.6">
+        PyMEs y proveedores usan cada vez más facturación electrónica y documentación digital. Esto crea <strong style="color:var(--text)">hitos comerciales verificables</strong> que se pueden mapear en condiciones de escrow.
+      </p>
+      <div class="divider"></div>
+      <div style="font-size:12px; color:var(--muted2)">México: CFDI obligatorio · Colombia: DIAN e-factura · Chile: SII</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── SLIDE 9 · GTM / MERCADO ───────────────────── -->
+<div class="slide bg-gradient-1" data-index="8">
+  <div class="label"><span class="num">08</span> Go-To-Market</div>
+  <h2>Primero México, <span class="hl">Luego LATAM</span></h2>
+  <p class="sub" style="margin-bottom:22px">México como mercado inicial por tres razones estructurales. Expansión vía anchors, no re-construcción de infraestructura.</p>
+
+  <div class="col-60-40" style="flex:1; align-items:stretch;">
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div class="card">
+          <div style="font-size:22px; margin-bottom:8px">🏗️</div>
+          <h3 style="font-size:13px; color:var(--accent)">Gran Base Industrial PyME</h3>
+          <p style="font-size:12px; color:var(--muted2)">Manufactura, alimentos, textiles, construcción. Ciclos constantes de 30–90 días de capital de trabajo.</p>
+        </div>
+        <div class="card">
+          <div style="font-size:22px; margin-bottom:8px">⚡</div>
+          <h3 style="font-size:13px; color:var(--accent)">SPEI + Etherfuse</h3>
+          <p style="font-size:12px; color:var(--muted2)">MERCATO ya integra Etherfuse. Fiat ↔ USDC on/off-ramp sin fricción para PyMEs e inversores.</p>
+        </div>
+        <div class="card">
+          <div style="font-size:22px; margin-bottom:8px">🌍</div>
+          <h3 style="font-size:13px; color:var(--gold)">Expansión LATAM Low-Cost</h3>
+          <p style="font-size:12px; color:var(--muted2)">Agregar nuevo mercado = agregar nuevo anchor. No re-construir infraestructura desde cero.</p>
+        </div>
+        <div class="card">
+          <div style="font-size:22px; margin-bottom:8px">🎯</div>
+          <h3 style="font-size:13px; color:var(--gold)">CAC Bajo por Modelo Aliado</h3>
+          <p style="font-size:12px; color:var(--muted2)">Proveedores introducen PyMEs porque el financiamiento acelera sus propias ventas y flujo de caja.</p>
+        </div>
+      </div>
+
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr><th>País</th><th>Prioridad</th><th>Anchor / Ramp</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>🇲🇽 México</td><td><span class="badge badge-green">MVP</span></td><td>Etherfuse (SPEI)</td></tr>
+            <tr><td>🇨🇴 Colombia</td><td><span class="badge badge-gold">V1.5</span></td><td>Anchor LATAM TBD</td></tr>
+            <tr><td>🇦🇷 Argentina</td><td><span class="badge badge-gold">V1.5</span></td><td>Anchor TBD</td></tr>
+            <tr><td>🇵🇪 Perú · 🇨🇱 Chile</td><td><span class="badge" style="background:rgba(99,102,241,0.15);color:#818cf8;border:1px solid rgba(99,102,241,0.25)">V2</span></td><td>Nuevos anchors</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div class="stat-big" style="flex:1;">
+        <span class="stat-val">+70%</span>
+        <div class="stat-label">de PyMEs en LATAM sin acceso a financiamiento de capital de trabajo</div>
+      </div>
+      <div class="stat-big" style="flex:1;">
+        <span class="stat-val">$90B+</span>
+        <div class="stat-label">Brecha de financiamiento anual en LATAM</div>
+      </div>
+      <div class="stat-big" style="flex:1;">
+        <span class="stat-val">$2T</span>
+        <div class="stat-label">Mercado global de Supply Chain Finance (TAM)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── SLIDE 10 · USO DE FONDOS ─────────────────── -->
+<div class="slide bg-gradient-2" data-index="9">
+  <div class="label"><span class="num">09</span> Fundraising</div>
+  <h2>$70,000 USD — <span class="hl-gold">SCF Grant</span></h2>
+  <p class="sub" style="margin-bottom:24px">Solicitud al Stellar Community Fund para pasar de validación técnica a producto con liquidez real en mainnet.</p>
+
+  <div class="cols-2" style="flex:1; align-items:stretch;">
+    <div style="display:flex; flex-direction:column; gap:10px;">
+
+      <div style="display:flex; gap:10px; align-items:center; background:rgba(0,212,255,0.07); border:1px solid rgba(0,212,255,0.25); border-radius:10px; padding:14px 16px;">
+        <div style="width:48px; height:48px; background:rgba(0,212,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:15px; color:var(--accent); flex-shrink:0;">40%</div>
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:3px; color:var(--accent)">Product Hardening + Mainnet</div>
+          <div style="font-size:12px; color:var(--muted2)">Deploy en mainnet, security review, optimización ciclo dual de escrow, mejoras UX para PyMEs. <strong style="color:var(--text)">~$28,000</strong></div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center; background:rgba(245,158,11,0.07); border:1px solid rgba(245,158,11,0.25); border-radius:10px; padding:14px 16px;">
+        <div style="width:48px; height:48px; background:rgba(245,158,11,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:15px; color:var(--gold); flex-shrink:0;">30%</div>
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:3px; color:var(--gold)">Cross-Chain Liquidity — Rozo</div>
+          <div style="font-size:12px; color:var(--muted2)">Integración de Rozo para USDC bridge desde Base/EVM → Stellar. Amplía pool de capital disponible. <strong style="color:var(--text)">~$21,000</strong></div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center; background:rgba(139,92,246,0.07); border:1px solid rgba(139,92,246,0.25); border-radius:10px; padding:14px 16px;">
+        <div style="width:48px; height:48px; background:rgba(139,92,246,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:15px; color:var(--purple); flex-shrink:0;">20%</div>
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:3px; color:var(--purple)">DeFi Liquidity — Soroswap</div>
+          <div style="font-size:12px; color:var(--muted2)">Integración Soroswap para routing óptimo y estrategias de yield en capital ocioso. <strong style="color:var(--text)">~$14,000</strong></div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center; background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.25); border-radius:10px; padding:14px 16px;">
+        <div style="width:48px; height:48px; background:rgba(16,185,129,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:15px; color:var(--green); flex-shrink:0;">10%</div>
+        <div>
+          <div style="font-size:13px; font-weight:700; margin-bottom:3px; color:var(--green)">Pilot PyMEs + Activación</div>
+          <div style="font-size:12px; color:var(--muted2)">Onboarding primer cohorte de PyMEs. Ejecución de ciclos reales. Datos de repago on-chain. <strong style="color:var(--text)">~$7,000</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <h3 style="font-size:14px; color:var(--muted2)">Hitos post-grant</h3>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div style="display:flex; align-items:center; gap:10px; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; font-size:13px;">
+          <span style="color:var(--accent)">①</span> Primeros ciclos con capital real en mainnet
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; font-size:13px;">
+          <span style="color:var(--gold)">②</span> Flujo de capital cross-chain activo (Rozo)
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; font-size:13px;">
+          <span style="color:var(--purple)">③</span> Volumen financiado medible en mainnet
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:12px 14px; font-size:13px;">
+          <span style="color:var(--green)">④</span> Historial de repago on-chain verificable
+        </div>
+      </div>
+
+      <div style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.25); border-radius:12px; padding:16px; margin-top:4px;">
+        <div style="font-size:12px; font-weight:700; color:var(--gold); margin-bottom:6px">⚡ Estructura del grant</div>
+        <p style="font-size:12px; color:var(--muted2); line-height:1.5">Grant no-dilutivo del SCF. Abiertos a round SAFE/pre-seed con inversores estratégicos post-pilotos exitosos.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── SLIDE 11 · TAREA TECHREBEL ───────────────── -->
+<div class="slide bg-gradient-1" data-index="10">
+  <div class="label"><span class="num">10</span> Aplicación Práctica — TechRebel</div>
+  <h2>Ahora Lo Aplicas Tú:<br><span class="hl">¿Cómo usa TechRebel esta Infraestructura?</span></h2>
+  <p class="sub" style="margin-bottom:24px">Ejercicio en clase. Analiza MERCATO como plantilla de arquitectura y diseña el equivalente para la plataforma TechRebel.</p>
+
+  <div class="cols-2" style="flex:1; align-items:stretch; gap:16px;">
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div class="task-box">
+        <div class="task-header">🎯 Tarea 1 — Define el Problema</div>
+        <div class="task-item">
+          <span class="task-num">1</span>
+          <span>¿Qué actores tienen el problema de capital o confianza en TechRebel? ¿Quién es el "inversor"? ¿Quién es el "proveedor"? ¿Quién es la "PyME"?</span>
+        </div>
+        <div class="task-item">
+          <span class="task-num">2</span>
+          <span>¿Cuál es el activo principal que se financia? Mapea el flujo: pedido → producción → entrega → pago.</span>
+        </div>
+        <div class="task-item">
+          <span class="task-num">3</span>
+          <span>¿Dónde está el riesgo de mal uso de fondos? ¿Cómo un escrow lo elimina?</span>
+        </div>
+      </div>
+
+      <div class="task-box" style="background:rgba(0,212,255,0.05); border-color:rgba(0,212,255,0.3);">
+        <div class="task-header" style="color:var(--accent)">🔧 Tarea 2 — Diseña el Escrow</div>
+        <div class="task-item">
+          <span class="task-num" style="background:rgba(0,212,255,0.15); border-color:rgba(0,212,255,0.3); color:var(--accent)">1</span>
+          <span>Define los <strong>roles del escrow</strong>: ¿Quién es el approver? ¿El release signer? ¿El dispute resolver?</span>
+        </div>
+        <div class="task-item">
+          <span class="task-num" style="background:rgba(0,212,255,0.15); border-color:rgba(0,212,255,0.3); color:var(--accent)">2</span>
+          <span>¿Cuántas <strong>liberaciones (milestones)</strong> necesita el ciclo de TechRebel? ¿Qué evento verifica cada hito?</span>
+        </div>
+        <div class="task-item">
+          <span class="task-num" style="background:rgba(0,212,255,0.15); border-color:rgba(0,212,255,0.3); color:var(--accent)">3</span>
+          <span>¿Necesitas un escrow de <strong>repago</strong>? ¿O solo uno de despliegue? Justifica.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div class="task-box" style="background:rgba(16,185,129,0.05); border-color:rgba(16,185,129,0.3);">
+        <div class="task-header" style="color:var(--green)">⭐ Tarea 3 — Integra el Stack Stellar</div>
+        <div class="task-item">
+          <span class="task-num" style="background:rgba(16,185,129,0.15); border-color:rgba(16,185,129,0.3); color:var(--green)">1</span>
+          <span>¿Qué <strong>activo</strong> usas? USDC, MXNe, u otro Stellar asset. Argumenta por qué.</span>
+        </div>
+        <div class="task-item">
+          <span class="task-num" style="background:rgba(16,185,129,0.15); border-color:rgba(16,185,129,0.3); color:var(--green)">2</span>
+          <span>¿Qué <strong>anchor/ramp</strong> usas para el on/off-boarding de fiat? (Etherfuse, otro anchor Stellar, o un nuevo proveedor).</span>
+        </div>
+        <div class="task-item">
+          <span class="task-num" style="background:rgba(16,185,129,0.15); border-color:rgba(16,185,129,0.3); color:var(--green)">3</span>
+          <span>Dibuja el <strong>flujo de fondos</strong> completo: inversor → escrow → proveedor → PyME vende → repago.</span>
+        </div>
+      </div>
+
+      <div class="task-box" style="background:rgba(139,92,246,0.05); border-color:rgba(139,92,246,0.3);">
+        <div class="task-header" style="color:var(--purple)">📊 Tarea 4 — Modelo de Negocio</div>
+        <div class="task-item">
+          <span class="task-num" style="background:rgba(139,92,246,0.15); border-color:rgba(139,92,246,0.3); color:var(--purple)">1</span>
+          <span>¿En qué evento del ciclo de escrow monetiza TechRebel? Define tu fee structure.</span>
+        </div>
+        <div class="task-item">
+          <span class="task-num" style="background:rgba(139,92,246,0.15); border-color:rgba(139,92,246,0.3); color:var(--purple)">2</span>
+          <span>Calcular: si procesas $500K en volumen mensual con un 2% de fee, ¿cuánto es el revenue anual?</span>
+        </div>
+        <div class="task-item">
+          <span class="task-num" style="background:rgba(139,92,246,0.15); border-color:rgba(139,92,246,0.3); color:var(--purple)">3</span>
+          <span>¿Cuál es tu ventaja competitiva (moat)? ¿Cómo construyes reputación on-chain para TechRebel?</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── SLIDE 12 · CIERRE ──────────────────────────── -->
+<div class="slide bg-gradient-1" data-index="11">
+  <div style="display:flex; flex-direction:column; justify-content:center; align-items:flex-start; height:100%;">
+    <div class="label"><span class="num">Cierre</span> Takeaways</div>
+    <h2 style="max-width:700px; margin-bottom:20px">
+      Lo que aprendiste hoy,<br>
+      <span class="hl">aplícalo mañana</span> en TechRebel
+    </h2>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; width:100%; margin-bottom:24px;">
+      <div style="background:var(--panel); border:1px solid rgba(0,212,255,0.25); border-radius:12px; padding:16px 18px;">
+        <div style="font-size:24px; margin-bottom:8px">🔑</div>
+        <div style="font-size:13px; font-weight:700; color:var(--accent); margin-bottom:6px">Escrow = Control de Capital</div>
+        <div style="font-size:12px; color:var(--muted2)">No más "confiar" en que los fondos se usen bien. El contrato lo garantiza.</div>
+      </div>
+      <div style="background:var(--panel); border:1px solid rgba(245,158,11,0.25); border-radius:12px; padding:16px 18px;">
+        <div style="font-size:24px; margin-bottom:8px">🧱</div>
+        <div style="font-size:13px; font-weight:700; color:var(--gold); margin-bottom:6px">Compón Infraestructura Existente</div>
+        <div style="font-size:12px; color:var(--muted2)">Trustless Work, Etherfuse, Soroswap. No re-inventes la rueda. Orquesta.</div>
+      </div>
+      <div style="background:var(--panel); border:1px solid rgba(16,185,129,0.25); border-radius:12px; padding:16px 18px;">
+        <div style="font-size:24px; margin-bottom:8px">🌱</div>
+        <div style="font-size:13px; font-weight:700; color:var(--green); margin-bottom:6px">Reputación como Colateral</div>
+        <div style="font-size:12px; color:var(--muted2)">On-chain track record = acceso a mejores condiciones. El historial es el producto.</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%;">
+      <div style="background:rgba(0,212,255,0.06); border:1px solid rgba(0,212,255,0.2); border-radius:12px; padding:16px 20px;">
+        <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:10px;">Stack para TechRebel</div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <span class="code-pill">Stellar / Soroban</span>
+          <span class="code-pill">Trustless Work</span>
+          <span class="code-pill">USDC</span>
+          <span class="code-pill">Etherfuse</span>
+          <span class="code-pill">Soroswap</span>
+          <span class="code-pill">Rozo</span>
+        </div>
+      </div>
+      <div style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.2); border-radius:12px; padding:16px 20px;">
+        <div style="font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:10px;">Recursos para investigar</div>
+        <div style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:var(--muted2);">
+          <div>📖 docs.trustlesswork.com — API de escrow</div>
+          <div>⭐ developers.stellar.org — SDK Soroban</div>
+          <div>🏦 etherfuse.com — Anchor SPEI/USDC</div>
+          <div>💱 soroswap.finance — DEX Stellar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<script>
+  const TOTAL = 12;
+  let current = 0;
+  let isAnimating = false;
+
+  const slides = document.querySelectorAll('.slide');
+  const progressBar = document.getElementById('progressBar');
+  const slideNum = document.getElementById('slideNum');
+  const navCounter = document.getElementById('navCounter');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  const dotsContainer = document.getElementById('navDots');
+
+  // Build dots
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsContainer.appendChild(d);
+  }
+
+  function updateUI() {
+    const pct = ((current + 1) / TOTAL) * 100;
+    progressBar.style.width = pct + '%';
+    slideNum.textContent = (current + 1) + ' / ' + TOTAL;
+    navCounter.textContent = (current + 1) + ' / ' + TOTAL;
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === TOTAL - 1;
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+  }
+
+  function goTo(index) {
+    if (isAnimating || index === current || index < 0 || index >= TOTAL) return;
+    isAnimating = true;
+
+    const direction = index > current ? 'forward' : 'back';
+    const prev = current;
+    current = index;
+
+    slides[prev].classList.remove('active');
+    slides[prev].classList.add('exit-left');
+
+    if (direction === 'back') {
+      slides[current].style.transform = 'translateX(-60px)';
+      slides[current].style.opacity = '0';
+    } else {
+      slides[current].style.transform = 'translateX(60px)';
+      slides[current].style.opacity = '0';
+    }
+
+    // Force reflow
+    void slides[current].offsetWidth;
+    slides[current].classList.add('active');
+    slides[current].style.transform = '';
+    slides[current].style.opacity = '';
+
+    setTimeout(() => {
+      slides[prev].classList.remove('exit-left');
+      isAnimating = false;
+    }, 480);
+
+    updateUI();
+  }
+
+  function changeSlide(delta) {
+    goTo(current + delta);
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      e.preventDefault();
+      changeSlide(1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      changeSlide(-1);
+    } else if (e.key === 'Home') {
+      goTo(0);
+    } else if (e.key === 'End') {
+      goTo(TOTAL - 1);
+    }
+  });
+
+  // Touch/swipe support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) changeSlide(dx < 0 ? 1 : -1);
+  }, { passive: true });
+
+  updateUI();
+</script>
+</body>
+</html>
